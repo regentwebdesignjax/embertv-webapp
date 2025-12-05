@@ -1,0 +1,48 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import Stripe from 'npm:stripe@14.11.0';
+
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY_TEST'), {
+  apiVersion: '2023-10-16',
+});
+
+Deno.serve(async (req) => {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Find or create Stripe customer
+    const customers = await stripe.customers.list({
+      email: user.email,
+      limit: 1
+    });
+
+    let customerId;
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+    } else {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        name: user.full_name,
+        metadata: {
+          base44_user_id: user.id
+        }
+      });
+      customerId = customer.id;
+    }
+
+    // Create customer portal session
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${req.headers.get('origin')}/Profile`,
+    });
+
+    return Response.json({ url: session.url });
+  } catch (error) {
+    console.error('Error creating customer portal:', error);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});
