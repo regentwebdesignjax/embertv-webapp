@@ -95,6 +95,27 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case 'charge.refunded': {
+        const charge = event.data.object;
+        console.log('Processing charge.refunded for payment_intent:', charge.payment_intent);
+        
+        // Find rentals associated with this payment intent
+        const rentals = await base44.entities.FilmRental.filter({
+          stripe_payment_intent_id: charge.payment_intent
+        });
+
+        console.log(`Found ${rentals.length} rentals to refund`);
+
+        for (const rental of rentals) {
+          // Mark rental as expired/refunded so it's no longer active
+          await base44.entities.FilmRental.update(rental.id, {
+            status: 'expired'
+          });
+          console.log(`Deactivated rental ${rental.id} due to refund`);
+        }
+        break;
+      }
+
       case 'price.updated':
       case 'price.created': {
         const price = event.data.object;
