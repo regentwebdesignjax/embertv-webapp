@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Menu, X, LogOut, User, Shield, UserCircle } from "lucide-react";
+import { Film, Menu, X, LogOut, User, Shield, UserCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import {
@@ -222,7 +222,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
-            <Link to={createPageUrl("Landing")} className="flex items-center gap-3 group">
+            <Link to={createPageUrl("Browse")} className="flex items-center gap-3 group">
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691721b89e14bc8b401725d6/6b060a1ae_ember-tv-logo.png"
                 alt="Ember TV"
@@ -427,13 +427,13 @@ export default function Layout({ children, currentPageName }) {
       <footer className="bg-[#1A1A1A] border-t border-white/5 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-3">
+            <Link to={createPageUrl("Browse")} className="flex items-center gap-3">
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691721b89e14bc8b401725d6/6b060a1ae_ember-tv-logo.png"
                 alt="Ember TV"
                 className="h-8 w-auto"
               />
-            </div>
+            </Link>
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex items-center gap-4">
                 <Link 
