@@ -202,6 +202,22 @@ export default function AdminDashboard() {
                 </CardHeader>
               </Link>
             </Card>
+
+            <Card className="bg-gradient-to-br from-yellow-500/10 to-yellow-700/10 border-yellow-500/20 hover:border-yellow-500/40 transition-colors cursor-pointer group">
+              <Link to={createPageUrl("AdminRentals")}>
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-yellow-400 transition-colors">
+                    <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center group-hover:bg-yellow-500/30 transition-colors">
+                      <Film className="w-6 h-6 text-yellow-400" />
+                    </div>
+                    Manage Rentals
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    View and deactivate user rentals
+                  </CardDescription>
+                </CardHeader>
+              </Link>
+            </Card>
             </div>
             </motion.div>
 
