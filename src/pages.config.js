@@ -14,6 +14,7 @@ import AdminFilmAnalytics from './pages/AdminFilmAnalytics';
 import AdminReviews from './pages/AdminReviews';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import AdminRentals from './pages/AdminRentals';
 import __Layout from './Layout.jsx';
 
 
@@ -34,6 +35,7 @@ export const PAGES = {
     "AdminReviews": AdminReviews,
     "PrivacyPolicy": PrivacyPolicy,
     "TermsOfService": TermsOfService,
+    "AdminRentals": AdminRentals,
 }
 
 export const pagesConfig = {
