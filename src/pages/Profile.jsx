@@ -59,23 +59,27 @@ export default function Profile() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data) => {
-      return await base44.auth.updateMe(data);
+      await base44.auth.updateMe(data);
+      return data;
     },
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
       setFullName(updatedUser.full_name || "");
+      queryClient.invalidateQueries(['user-rentals']);
       setSaveMessage({ type: 'success', text: 'Profile updated successfully!' });
       setTimeout(() => setSaveMessage(null), 3000);
     },
     onError: (error) => {
+      console.error('Profile update error:', error);
       setSaveMessage({ type: 'error', text: error.message || 'Failed to update profile' });
       setTimeout(() => setSaveMessage(null), 3000);
     }
   });
 
-  const handleSave = () => {
-    updateProfileMutation.mutate({ full_name: fullName });
+  const handleSave = async () => {
+    if (!fullName.trim()) return;
+    updateProfileMutation.mutate({ full_name: fullName.trim() });
   };
 
   const handleManagePayments = async () => {
