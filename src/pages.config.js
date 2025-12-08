@@ -1,4 +1,3 @@
-import Landing from './pages/Landing';
 import Browse from './pages/Browse';
 import FilmDetail from './pages/FilmDetail';
 import AdminDashboard from './pages/AdminDashboard';
@@ -19,7 +18,6 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Landing": Landing,
     "Browse": Browse,
     "FilmDetail": FilmDetail,
     "AdminDashboard": AdminDashboard,
