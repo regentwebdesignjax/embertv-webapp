@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
+import { X } from "lucide-react";
 
 export default function Profile() {
   const [user, setUser] = React.useState(null);
@@ -120,10 +121,16 @@ export default function Profile() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6">
 
-            <Alert className={saveMessage.type === 'success' ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}>
+            <Alert className={`relative ${saveMessage.type === 'success' ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
               <AlertDescription className={saveMessage.type === 'success' ? 'text-green-400' : 'text-red-400'}>
                 {saveMessage.text}
               </AlertDescription>
+              <button
+                onClick={() => setSaveMessage(null)}
+                className="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </Alert>
           </motion.div>
         }
