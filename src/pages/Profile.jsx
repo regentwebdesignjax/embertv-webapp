@@ -59,9 +59,7 @@ export default function Profile() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data) => {
-      // Update using entities instead of auth.updateMe
-      const currentUser = await base44.auth.me();
-      await base44.entities.User.update(currentUser.id, data);
+      await base44.auth.updateMe(data);
       return data;
     },
     onSuccess: async (data) => {
