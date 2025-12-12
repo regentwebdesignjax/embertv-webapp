@@ -41,6 +41,7 @@ export default function AdminRentals() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [reactivateDialogOpen, setReactivateDialogOpen] = useState(false);
   const [selectedRental, setSelectedRental] = useState(null);
 
   const queryClient = useQueryClient();
@@ -102,6 +103,26 @@ export default function AdminRentals() {
     },
   });
 
+  const reactivateRentalMutation = useMutation({
+    mutationFn: async (rentalId) => {
+      const newExpiresAt = new Date();
+      newExpiresAt.setHours(newExpiresAt.getHours() + 24);
+      await base44.entities.FilmRental.update(rentalId, {
+        status: "active",
+        expires_at: newExpiresAt.toISOString(),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-rentals"]);
+      toast.success("Rental reactivated successfully");
+      setReactivateDialogOpen(false);
+      setSelectedRental(null);
+    },
+    onError: (error) => {
+      toast.error("Failed to reactivate rental: " + error.message);
+    },
+  });
+
   const handleDeactivateClick = (rental) => {
     setSelectedRental(rental);
     setDeactivateDialogOpen(true);
@@ -110,6 +131,17 @@ export default function AdminRentals() {
   const handleDeactivateConfirm = () => {
     if (selectedRental) {
       deactivateRentalMutation.mutate(selectedRental.id);
+    }
+  };
+
+  const handleReactivateClick = (rental) => {
+    setSelectedRental(rental);
+    setReactivateDialogOpen(true);
+  };
+
+  const handleReactivateConfirm = () => {
+    if (selectedRental) {
+      reactivateRentalMutation.mutate(selectedRental.id);
     }
   };
 
@@ -273,16 +305,29 @@ export default function AdminRentals() {
                               : "-"}
                           </TableCell>
                           <TableCell>
-                            {isRentalActive(rental) && (
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => handleDeactivateClick(rental)}
-                                disabled={deactivateRentalMutation.isPending}
-                              >
-                                Deactivate
-                              </Button>
-                            )}
+                            <div className="flex gap-2">
+                              {isRentalActive(rental) && (
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => handleDeactivateClick(rental)}
+                                  disabled={deactivateRentalMutation.isPending}
+                                >
+                                  Deactivate
+                                </Button>
+                              )}
+                              {!isRentalActive(rental) && (rental.status === "expired" || rental.status === "failed") && (
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  onClick={() => handleReactivateClick(rental)}
+                                  disabled={reactivateRentalMutation.isPending}
+                                  className="bg-green-600 hover:bg-green-700"
+                                >
+                                  Reactivate
+                                </Button>
+                              )}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -314,6 +359,30 @@ export default function AdminRentals() {
               disabled={deactivateRentalMutation.isPending}
             >
               {deactivateRentalMutation.isPending ? "Deactivating..." : "Deactivate"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={reactivateDialogOpen} onOpenChange={setReactivateDialogOpen}>
+        <AlertDialogContent className="bg-[#1A1A1A] border-[#333333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Reactivate Rental</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-400">
+              Are you sure you want to reactivate this rental? The user will regain
+              access to the film for 24 hours from now.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-[#000000] border-[#333333] text-white hover:bg-[#2A2A2A]">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleReactivateConfirm}
+              className="bg-green-600 text-white hover:bg-green-700"
+              disabled={reactivateRentalMutation.isPending}
+            >
+              {reactivateRentalMutation.isPending ? "Reactivating..." : "Reactivate"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
