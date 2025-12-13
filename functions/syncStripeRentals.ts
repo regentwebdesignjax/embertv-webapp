@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 import Stripe from 'npm:stripe';
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_TEST"), {
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
   apiVersion: '2023-10-16',
 });
 
@@ -57,21 +57,44 @@ Deno.serve(async (req) => {
       const rental = existingRentals[0];
 
       // Update if still pending or missing payment data
-      if (rental.status === 'pending' || !rental.amount_cents) {
+      if (rental.status === 'pending' || !rental.amount_cents || !rental.net_amount_cents) {
         const purchasedAt = new Date(session.created * 1000);
         const expiresAt = new Date(purchasedAt.getTime() + 24 * 60 * 60 * 1000);
 
-        await base44.asServiceRole.entities.FilmRental.update(rental.id, {
+        // Fetch payment intent to get balance transaction for net revenue
+        let netAmountCents = null;
+        if (session.payment_intent) {
+          try {
+            const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
+              expand: ['latest_charge.balance_transaction']
+            });
+            
+            const balanceTransaction = paymentIntent.latest_charge?.balance_transaction;
+            if (balanceTransaction && typeof balanceTransaction === 'object') {
+              netAmountCents = balanceTransaction.net;
+            }
+          } catch (error) {
+            console.error(`Failed to fetch balance transaction for rental ${rental.id}:`, error);
+          }
+        }
+
+        const updateData = {
           status: 'active',
           stripe_payment_intent_id: session.payment_intent,
           purchased_at: purchasedAt.toISOString(),
           expires_at: expiresAt.toISOString(),
           amount_cents: session.amount_total,
           currency: session.currency
-        });
+        };
+
+        if (netAmountCents !== null) {
+          updateData.net_amount_cents = netAmountCents;
+        }
+
+        await base44.asServiceRole.entities.FilmRental.update(rental.id, updateData);
 
         synced++;
-        console.log(`Synced rental ${rental.id}`);
+        console.log(`Synced rental ${rental.id} with net revenue: ${netAmountCents}`);
       } else {
         skipped++;
       }
