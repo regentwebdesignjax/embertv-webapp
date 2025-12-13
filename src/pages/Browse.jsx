@@ -96,7 +96,7 @@ export default function Browse() {
           >
             <h1 className="text-4xl sm:text-5xl font-bold mb-4">
               {user ? (
-                <>Welcome, <span className="text-[#FF6B1A]">{user.full_name || user.email}</span></>
+                <>Welcome, <span className="text-[#FF6B1A]">{user.display_name || user.email}</span></>
               ) : (
                 <>Discover <span className="text-[#FF6B1A]">Faith-Focused Films</span></>
               )}

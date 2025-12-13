@@ -17,7 +17,7 @@ import { X } from "lucide-react";
 export default function Profile() {
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
-  const [fullName, setFullName] = React.useState("");
+  const [displayName, setDisplayName] = React.useState("");
   const [saveMessage, setSaveMessage] = React.useState(null);
   const [portalLoading, setPortalLoading] = React.useState(false);
 
@@ -31,7 +31,7 @@ export default function Profile() {
     try {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
-      setFullName(currentUser.full_name || "");
+      setDisplayName(currentUser.display_name || "");
       setLoading(false);
     } catch (error) {
       base44.auth.redirectToLogin(createPageUrl("Profile"));
@@ -65,7 +65,7 @@ export default function Profile() {
     onSuccess: async (data) => {
       const updatedUser = await base44.auth.me();
       setUser(updatedUser);
-      setFullName(updatedUser.full_name || "");
+      setDisplayName(updatedUser.display_name || "");
       queryClient.invalidateQueries(['user-rentals']);
       setSaveMessage({ type: 'success', text: 'Profile updated successfully!' });
       setTimeout(() => setSaveMessage(null), 3000);
@@ -78,8 +78,8 @@ export default function Profile() {
   });
 
   const handleSave = async () => {
-    if (!fullName.trim()) return;
-    updateProfileMutation.mutate({ full_name: fullName.trim() });
+    if (!displayName.trim()) return;
+    updateProfileMutation.mutate({ display_name: displayName.trim() });
   };
 
   const handleManagePayments = async () => {
@@ -158,13 +158,13 @@ export default function Profile() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="fullName" className="text-white mb-2 block">Full Name</Label>
+                  <Label htmlFor="displayName" className="text-white mb-2 block">Display Name</Label>
                   <Input
-                    id="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    id="displayName"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
                     className="bg-[#0A0A0A] border-[#333333] text-white focus:border-[#EF6418] focus:ring-[#EF6418]"
-                    placeholder="Enter your full name" />
+                    placeholder="Enter your display name" />
 
                 </div>
 
@@ -193,7 +193,7 @@ export default function Profile() {
 
                 <Button
                   onClick={handleSave}
-                  disabled={updateProfileMutation.isPending || !fullName.trim()}
+                  disabled={updateProfileMutation.isPending || !displayName.trim()}
                   className="btn-primary w-full sm:w-auto">
 
                   {updateProfileMutation.isPending ?
