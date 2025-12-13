@@ -31,7 +31,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, XCircle, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, XCircle, Clock, CheckCircle2, AlertCircle, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
@@ -42,7 +51,10 @@ export default function AdminRentals() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
   const [reactivateDialogOpen, setReactivateDialogOpen] = useState(false);
+  const [awardDialogOpen, setAwardDialogOpen] = useState(false);
   const [selectedRental, setSelectedRental] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedFilmId, setSelectedFilmId] = useState("");
 
   const queryClient = useQueryClient();
 
@@ -145,6 +157,39 @@ export default function AdminRentals() {
     }
   };
 
+  const awardRentalMutation = useMutation({
+    mutationFn: async ({ userId, filmId }) => {
+      const now = new Date();
+      const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      
+      await base44.entities.FilmRental.create({
+        user_id: userId,
+        film_id: filmId,
+        status: "active",
+        purchased_at: now.toISOString(),
+        expires_at: expiresAt.toISOString(),
+        amount_cents: 0,
+        currency: "usd",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-rentals"]);
+      toast.success("Free rental awarded successfully");
+      setAwardDialogOpen(false);
+      setSelectedUserId("");
+      setSelectedFilmId("");
+    },
+    onError: (error) => {
+      toast.error("Failed to award rental: " + error.message);
+    },
+  });
+
+  const handleAwardRental = () => {
+    if (selectedUserId && selectedFilmId) {
+      awardRentalMutation.mutate({ userId: selectedUserId, filmId: selectedFilmId });
+    }
+  };
+
   const getFilmTitle = (filmId) => {
     const film = films.find((f) => f.id === filmId);
     return film ? film.title : "Unknown Film";
@@ -243,18 +288,27 @@ export default function AdminRentals() {
             <CardHeader>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <CardTitle className="text-white">All Rentals</CardTitle>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[180px] bg-[#000000] border-[#333333] text-white">
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white">
-                    <SelectItem value="all">All Rentals</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="expired">Expired</SelectItem>
-                    <SelectItem value="failed">Failed</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => setAwardDialogOpen(true)}
+                    className="bg-[#EF6418] hover:bg-[#D55514] text-white"
+                  >
+                    <Gift className="w-4 h-4 mr-2" />
+                    Award Free Rental
+                  </Button>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-[180px] bg-[#000000] border-[#333333] text-white">
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white">
+                      <SelectItem value="all">All Rentals</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="expired">Expired</SelectItem>
+                      <SelectItem value="failed">Failed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -387,6 +441,72 @@ export default function AdminRentals() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={awardDialogOpen} onOpenChange={setAwardDialogOpen}>
+        <DialogContent className="bg-[#1A1A1A] border-[#333333] text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Gift className="w-5 h-5 text-[#EF6418]" />
+              Award Free Rental
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Grant a user free 24-hour access to any film
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="user-select" className="text-white">Select User</Label>
+              <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+                <SelectTrigger id="user-select" className="bg-[#000000] border-[#333333] text-white">
+                  <SelectValue placeholder="Choose a user" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white max-h-[200px]">
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.full_name || user.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="film-select" className="text-white">Select Film</Label>
+              <Select value={selectedFilmId} onValueChange={setSelectedFilmId}>
+                <SelectTrigger id="film-select" className="bg-[#000000] border-[#333333] text-white">
+                  <SelectValue placeholder="Choose a film" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white max-h-[200px]">
+                  {films.map((film) => (
+                    <SelectItem key={film.id} value={film.id}>
+                      {film.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAwardDialogOpen(false);
+                setSelectedUserId("");
+                setSelectedFilmId("");
+              }}
+              className="bg-[#000000] border-[#333333] text-white hover:bg-[#2A2A2A]"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAwardRental}
+              disabled={!selectedUserId || !selectedFilmId || awardRentalMutation.isPending}
+              className="bg-[#EF6418] hover:bg-[#D55514] text-white"
+            >
+              {awardRentalMutation.isPending ? "Awarding..." : "Award Rental"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
