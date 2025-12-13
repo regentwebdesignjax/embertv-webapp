@@ -463,7 +463,7 @@ export default function AdminRentals() {
                 <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white max-h-[200px]">
                   {users.map((user) => (
                     <SelectItem key={user.id} value={user.id}>
-                      {user.full_name || user.email}
+                      {user.full_name ? `${user.full_name} (${user.email})` : user.email}
                     </SelectItem>
                   ))}
                 </SelectContent>
