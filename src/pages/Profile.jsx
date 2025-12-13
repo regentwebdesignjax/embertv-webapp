@@ -59,7 +59,7 @@ export default function Profile() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (data) => {
-      await base44.entities.User.update(user.id, data);
+      await base44.auth.updateMe(data);
       return data;
     },
     onSuccess: async (data) => {
