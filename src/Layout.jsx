@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Toaster } from "react-hot-toast";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = React.useState(null);
@@ -47,6 +48,29 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-[#000000] text-white">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 7000,
+          style: {
+            background: '#1A1A1A',
+            color: '#fff',
+            border: '1px solid #333333',
+          },
+          success: {
+            iconTheme: {
+              primary: '#EF6418',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
       {/* Custom Font & Base Styles */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
