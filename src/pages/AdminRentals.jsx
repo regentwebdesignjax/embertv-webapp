@@ -40,7 +40,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, XCircle, Clock, CheckCircle2, AlertCircle, Gift } from "lucide-react";
+import { ArrowLeft, XCircle, Clock, CheckCircle2, AlertCircle, Gift, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
@@ -52,9 +52,13 @@ export default function AdminRentals() {
   const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
   const [reactivateDialogOpen, setReactivateDialogOpen] = useState(false);
   const [awardDialogOpen, setAwardDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
   const [selectedRental, setSelectedRental] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedFilmId, setSelectedFilmId] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(25);
 
   const queryClient = useQueryClient();
 
@@ -190,6 +194,59 @@ export default function AdminRentals() {
     }
   };
 
+  const deleteRentalMutation = useMutation({
+    mutationFn: async (rentalId) => {
+      await base44.entities.FilmRental.delete(rentalId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-rentals"]);
+      toast.success("Rental deleted successfully");
+      setDeleteDialogOpen(false);
+      setSelectedRental(null);
+    },
+    onError: (error) => {
+      toast.error("Failed to delete rental: " + error.message);
+    },
+  });
+
+  const bulkDeleteRentalsMutation = useMutation({
+    mutationFn: async () => {
+      const rentalsToDelete = rentals.filter((rental) => {
+        return rental.status === "pending" || rental.status === "expired" || rental.status === "failed";
+      });
+      
+      await Promise.all(
+        rentalsToDelete.map((rental) => base44.entities.FilmRental.delete(rental.id))
+      );
+      
+      return rentalsToDelete.length;
+    },
+    onSuccess: (count) => {
+      queryClient.invalidateQueries(["admin-rentals"]);
+      toast.success(`Deleted ${count} rental(s) successfully`);
+      setBulkDeleteDialogOpen(false);
+      setCurrentPage(1);
+    },
+    onError: (error) => {
+      toast.error("Failed to delete rentals: " + error.message);
+    },
+  });
+
+  const handleDeleteClick = (rental) => {
+    setSelectedRental(rental);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (selectedRental) {
+      deleteRentalMutation.mutate(selectedRental.id);
+    }
+  };
+
+  const handleBulkDeleteConfirm = () => {
+    bulkDeleteRentalsMutation.mutate();
+  };
+
   const getFilmTitle = (filmId) => {
     const film = films.find((f) => f.id === filmId);
     return film ? film.title : "Unknown Film";
@@ -252,6 +309,15 @@ export default function AdminRentals() {
     return rental.status === statusFilter;
   });
 
+  const totalPages = Math.ceil(filteredRentals.length / perPage);
+  const startIndex = (currentPage - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const paginatedRentals = filteredRentals.slice(startIndex, endIndex);
+
+  const failedExpiredCount = rentals.filter(
+    (r) => r.status === "pending" || r.status === "expired" || r.status === "failed"
+  ).length;
+
   if (loading || rentalsLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -286,28 +352,57 @@ export default function AdminRentals() {
 
           <Card className="bg-[#1A1A1A] border-[#333333]">
             <CardHeader>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <CardTitle className="text-white">All Rentals</CardTitle>
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => setAwardDialogOpen(true)}
-                    className="bg-[#EF6418] hover:bg-[#D55514] text-white"
-                  >
-                    <Gift className="w-4 h-4 mr-2" />
-                    Award Free Rental
-                  </Button>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[180px] bg-[#000000] border-[#333333] text-white">
-                      <SelectValue placeholder="Filter by status" />
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <CardTitle className="text-white">All Rentals</CardTitle>
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      onClick={() => setAwardDialogOpen(true)}
+                      className="bg-[#EF6418] hover:bg-[#D55514] text-white"
+                    >
+                      <Gift className="w-4 h-4 mr-2" />
+                      Award Free Rental
+                    </Button>
+                    {failedExpiredCount > 0 && (
+                      <Button
+                        onClick={() => setBulkDeleteDialogOpen(true)}
+                        variant="destructive"
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Clear Failed/Expired ({failedExpiredCount})
+                      </Button>
+                    )}
+                    <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
+                      <SelectTrigger className="w-[180px] bg-[#000000] border-[#333333] text-white">
+                        <SelectValue placeholder="Filter by status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white">
+                        <SelectItem value="all">All Rentals</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="expired">Expired</SelectItem>
+                        <SelectItem value="failed">Failed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <span>Show per page:</span>
+                  <Select value={perPage.toString()} onValueChange={(value) => { setPerPage(parseInt(value)); setCurrentPage(1); }}>
+                    <SelectTrigger className="w-[100px] bg-[#000000] border-[#333333] text-white h-8">
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white">
-                      <SelectItem value="all">All Rentals</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="expired">Expired</SelectItem>
-                      <SelectItem value="failed">Failed</SelectItem>
+                      <SelectItem value="25">25</SelectItem>
+                      <SelectItem value="50">50</SelectItem>
+                      <SelectItem value="75">75</SelectItem>
+                      <SelectItem value="100">100</SelectItem>
                     </SelectContent>
                   </Select>
+                  <span>
+                    Showing {startIndex + 1}-{Math.min(endIndex, filteredRentals.length)} of {filteredRentals.length}
+                  </span>
                 </div>
               </div>
             </CardHeader>
@@ -331,7 +426,7 @@ export default function AdminRentals() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredRentals.map((rental) => (
+                      {paginatedRentals.map((rental) => (
                         <TableRow
                           key={rental.id}
                           className="border-[#333333] hover:bg-white/5"
@@ -381,12 +476,46 @@ export default function AdminRentals() {
                                   Reactivate
                                 </Button>
                               )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteClick(rental)}
+                                disabled={deleteRentalMutation.isPending}
+                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
+                </div>
+              )}
+              {filteredRentals.length > 0 && totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-4 pt-4 border-t border-[#333333]">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="bg-[#000000] border-[#333333] text-white hover:bg-[#2A2A2A]"
+                  >
+                    Previous
+                  </Button>
+                  <span className="text-sm text-gray-400">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="bg-[#000000] border-[#333333] text-white hover:bg-[#2A2A2A]"
+                  >
+                    Next
+                  </Button>
                 </div>
               )}
             </CardContent>
@@ -507,6 +636,53 @@ export default function AdminRentals() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-[#1A1A1A] border-[#333333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Rental</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-400">
+              Are you sure you want to permanently delete this rental record? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-[#000000] border-[#333333] text-white hover:bg-[#2A2A2A]">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-red-600 text-white hover:bg-red-700"
+              disabled={deleteRentalMutation.isPending}
+            >
+              {deleteRentalMutation.isPending ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={bulkDeleteDialogOpen} onOpenChange={setBulkDeleteDialogOpen}>
+        <AlertDialogContent className="bg-[#1A1A1A] border-[#333333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Clear Failed/Expired Rentals</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-400">
+              Are you sure you want to permanently delete all pending, expired, and failed rental records? 
+              This will remove {failedExpiredCount} rental(s). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-[#000000] border-[#333333] text-white hover:bg-[#2A2A2A]">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDeleteConfirm}
+              className="bg-red-600 text-white hover:bg-red-700"
+              disabled={bulkDeleteRentalsMutation.isPending}
+            >
+              {bulkDeleteRentalsMutation.isPending ? "Deleting..." : `Delete ${failedExpiredCount} Rental(s)`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
