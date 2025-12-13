@@ -25,16 +25,16 @@ export default function Browse() {
     try {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
-      setLoading(false);
     } catch (error) {
       setUser(null);
+    } finally {
       setLoading(false);
     }
   };
 
   React.useEffect(() => {
     checkAuth();
-  }, [location.pathname, location.search]);
+  }, [location]);
 
   const { data: films, isLoading: filmsLoading } = useQuery({
     queryKey: ['published-films'],
