@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowLeft, Shield, User } from "lucide-react";
+import { ArrowLeft, Shield, User, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,11 +15,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "react-hot-toast";
 // This import is still here, but the format function is not directly used in the new date display. `toLocaleDateString` is used instead.
 
 export default function AdminUsers() {
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     checkAuth();
@@ -44,6 +59,32 @@ export default function AdminUsers() {
     queryFn: () => base44.entities.User.list('-created_date'),
     initialData: [],
   });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId) => {
+      await base44.entities.User.delete(userId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      toast.success("User deleted successfully");
+      setDeleteDialogOpen(false);
+      setUserToDelete(null);
+    },
+    onError: (error) => {
+      toast.error("Failed to delete user: " + error.message);
+    },
+  });
+
+  const handleDeleteClick = (userToDelete) => {
+    setUserToDelete(userToDelete);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (userToDelete) {
+      deleteUserMutation.mutate(userToDelete.id);
+    }
+  };
 
   const getRoleBadge = (role) => {
     if (role === "admin") {
@@ -131,18 +172,30 @@ export default function AdminUsers() {
                     <TableHead className="text-gray-400">Email</TableHead>
                     <TableHead className="text-gray-400">Role</TableHead>
                     <TableHead className="text-gray-400">Joined</TableHead>
+                    <TableHead className="text-gray-400">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id} className="border-[#333333] hover:bg-white/5">
+                  {users.map((userItem) => (
+                    <TableRow key={userItem.id} className="border-[#333333] hover:bg-white/5">
                       <TableCell className="font-medium text-white">
-                        {user.full_name || "—"}
+                        {userItem.full_name || "—"}
                       </TableCell>
-                      <TableCell className="text-gray-400">{user.email}</TableCell>
-                      <TableCell>{getRoleBadge(user.role)}</TableCell>
+                      <TableCell className="text-gray-400">{userItem.email}</TableCell>
+                      <TableCell>{getRoleBadge(userItem.role)}</TableCell>
                       <TableCell className="text-gray-400">
-                        {new Date(user.created_date).toLocaleDateString()}
+                        {new Date(userItem.created_date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteClick(userItem)}
+                          disabled={deleteUserMutation.isPending}
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -152,6 +205,31 @@ export default function AdminUsers() {
           )}
         </motion.div>
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-[#1A1A1A] border-[#333333]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete User Account</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-400">
+              Are you sure you want to permanently delete{" "}
+              <span className="font-semibold text-white">{userToDelete?.email}</span>?
+              This action cannot be undone and will remove all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-[#000000] border-[#333333] text-white hover:bg-[#2A2A2A]">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-red-600 text-white hover:bg-red-700"
+              disabled={deleteUserMutation.isPending}
+            >
+              {deleteUserMutation.isPending ? "Deleting..." : "Delete User"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
