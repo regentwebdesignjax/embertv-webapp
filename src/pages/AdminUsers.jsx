@@ -2,12 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowLeft, Shield, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -16,13 +15,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "react-hot-toast";
 // This import is still here, but the format function is not directly used in the new date display. `toLocaleDateString` is used instead.
 
 export default function AdminUsers() {
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
-  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     checkAuth();
@@ -47,23 +44,6 @@ export default function AdminUsers() {
     queryFn: () => base44.entities.User.list('-created_date'),
     initialData: [],
   });
-
-  const toggleUserStatusMutation = useMutation({
-    mutationFn: async ({ userId, isActive }) => {
-      await base44.asServiceRole.entities.User.update(userId, { is_active: isActive });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['users']);
-      toast.success('User status updated successfully');
-    },
-    onError: (error) => {
-      toast.error('Failed to update user status: ' + error.message);
-    },
-  });
-
-  const handleToggleStatus = (userId, currentStatus) => {
-    toggleUserStatusMutation.mutate({ userId, isActive: !currentStatus });
-  };
 
   const getRoleBadge = (role) => {
     if (role === "admin") {
@@ -151,37 +131,18 @@ export default function AdminUsers() {
                     <TableHead className="text-gray-400">Email</TableHead>
                     <TableHead className="text-gray-400">Role</TableHead>
                     <TableHead className="text-gray-400">Joined</TableHead>
-                    <TableHead className="text-gray-400">Subscriber Since</TableHead>
-                    <TableHead className="text-gray-400">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((userItem) => (
-                    <TableRow key={userItem.id} className="border-[#333333] hover:bg-white/5">
+                  {users.map((user) => (
+                    <TableRow key={user.id} className="border-[#333333] hover:bg-white/5">
                       <TableCell className="font-medium text-white">
-                        {userItem.full_name || userItem.display_name || "—"}
+                        {user.full_name || "—"}
                       </TableCell>
-                      <TableCell className="text-gray-400">{userItem.email}</TableCell>
-                      <TableCell>{getRoleBadge(userItem.role)}</TableCell>
+                      <TableCell className="text-gray-400">{user.email}</TableCell>
+                      <TableCell>{getRoleBadge(user.role)}</TableCell>
                       <TableCell className="text-gray-400">
-                        {new Date(userItem.created_date).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className="text-gray-400">
-                        {userItem.subscriber_since 
-                          ? new Date(userItem.subscriber_since).toLocaleDateString()
-                          : "—"}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            checked={userItem.is_active !== false}
-                            onCheckedChange={() => handleToggleStatus(userItem.id, userItem.is_active !== false)}
-                            disabled={toggleUserStatusMutation.isPending}
-                          />
-                          <span className="text-sm text-gray-400">
-                            {userItem.is_active !== false ? "Active" : "Inactive"}
-                          </span>
-                        </div>
+                        {new Date(user.created_date).toLocaleDateString()}
                       </TableCell>
                     </TableRow>
                   ))}
