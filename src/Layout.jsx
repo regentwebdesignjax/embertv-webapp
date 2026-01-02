@@ -9,8 +9,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from
+"@/components/ui/dropdown-menu";
 import { Toaster } from "react-hot-toast";
 
 export default function Layout({ children, currentPageName }) {
@@ -55,22 +55,22 @@ export default function Layout({ children, currentPageName }) {
           style: {
             background: '#1A1A1A',
             color: '#fff',
-            border: '1px solid #333333',
+            border: '1px solid #333333'
           },
           success: {
             iconTheme: {
               primary: '#EF6418',
-              secondary: '#fff',
-            },
+              secondary: '#fff'
+            }
           },
           error: {
             iconTheme: {
               primary: '#ef4444',
-              secondary: '#fff',
-            },
-          },
-        }}
-      />
+              secondary: '#fff'
+            }
+          }
+        }} />
+
       {/* Custom Font & Base Styles */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -247,58 +247,58 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
             <Link to={createPageUrl("Browse")} className="flex items-center gap-3 group">
-              <img 
+              <img
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691721b89e14bc8b401725d6/6b060a1ae_ember-tv-logo.png"
                 alt="Ember TV"
-                className="h-10 sm:h-12 w-auto transform transition-transform group-hover:scale-105"
-              />
+                className="h-10 sm:h-12 w-auto transform transition-transform group-hover:scale-105" />
+
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
-              {!loading && (
+              {!loading &&
+              <>
+                  {user ?
                 <>
-                  {user ? (
-                    <>
                       <Link
-                        to={createPageUrl("Browse")}
-                        className={`text-sm font-medium transition-colors hover:text-[#EF6418] ${
-                          location.pathname === createPageUrl("Browse")
-                            ? "text-white"
-                            : "text-gray-400"
-                        }`}
-                      >
+                    to={createPageUrl("Browse")}
+                    className={`text-sm font-medium transition-colors hover:text-[#EF6418] ${
+                    location.pathname === createPageUrl("Browse") ?
+                    "text-white" :
+                    "text-gray-400"}`
+                    }>
+
                         Browse
                       </Link>
                       <Link
-                        to={createPageUrl("MyRentals")}
-                        className={`text-sm font-medium transition-colors hover:text-[#EF6418] ${
-                          location.pathname === createPageUrl("MyRentals")
-                            ? "text-white"
-                            : "text-gray-400"
-                        }`}
-                      >
+                    to={createPageUrl("MyRentals")}
+                    className={`text-sm font-medium transition-colors hover:text-[#EF6418] ${
+                    location.pathname === createPageUrl("MyRentals") ?
+                    "text-white" :
+                    "text-gray-400"}`
+                    }>
+
                         My Rentals
                       </Link>
-                      {user.role === "admin" && (
-                        <Link
-                          to={createPageUrl("AdminDashboard")}
-                          className={`text-sm font-medium transition-colors hover:text-[#EF6418] flex items-center gap-1 ${
-                            location.pathname.includes("Admin")
-                              ? "text-white"
-                              : "text-gray-400"
-                          }`}
-                        >
+                      {user.role === "admin" &&
+                  <Link
+                    to={createPageUrl("AdminDashboard")}
+                    className={`text-sm font-medium transition-colors hover:text-[#EF6418] flex items-center gap-1 ${
+                    location.pathname.includes("Admin") ?
+                    "text-white" :
+                    "text-gray-400"}`
+                    }>
+
                           <Shield className="w-4 h-4" />
                           Admin Panel
                         </Link>
-                      )}
+                  }
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            variant="ghost"
-                            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10 hover:bg-white/10"
-                          >
+                        variant="ghost"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10 hover:bg-white/10">
+
                             <User className="w-4 h-4 text-gray-400" />
                             <span className="text-sm text-gray-300">{user.email}</span>
                           </Button>
@@ -312,90 +312,90 @@ export default function Layout({ children, currentPageName }) {
                           </DropdownMenuItem>
                           <DropdownMenuSeparator className="bg-[#333333]" />
                           <DropdownMenuItem
-                            onClick={handleLogout}
-                            className="focus:bg-white/10 focus:text-white cursor-pointer"
-                          >
+                        onClick={handleLogout}
+                        className="focus:bg-white/10 focus:text-white cursor-pointer">
+
                             <LogOut className="w-4 h-4 mr-2" />
                             Log Out
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </>
-                  ) : (
-                    <div className="flex items-center gap-3">
+                    </> :
+
+                <div className="flex items-center gap-3">
                       <Button
-                        variant="ghost"
-                        onClick={handleLogin}
-                        className="text-white hover:bg-white/10 font-medium"
-                      >
+                    variant="ghost"
+                    onClick={handleLogin}
+                    className="text-white hover:bg-white/10 font-medium">
+
                         Log In
                       </Button>
                       <Button
-                        onClick={handleLogin}
-                        className="btn-primary px-6"
-                      >
+                    onClick={handleLogin}
+                    className="btn-primary px-6">
+
                         Get Started
                       </Button>
                     </div>
-                  )}
+                }
                 </>
-              )}
+              }
             </nav>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors">
+
+              {mobileMenuOpen ?
+              <X className="w-6 h-6" /> :
+
+              <Menu className="w-6 h-6" />
+              }
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-[#1A1A1A]/95 backdrop-blur-lg border-t border-white/10">
+        {mobileMenuOpen &&
+        <div className="md:hidden bg-[#1A1A1A]/95 backdrop-blur-lg border-t border-white/10">
             <div className="px-4 py-6 space-y-4">
-              {!loading && (
-                <>
-                  {user ? (
-                    <>
+              {!loading &&
+            <>
+                  {user ?
+              <>
                       <Link
-                        to={createPageUrl("Browse")}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors"
-                      >
+                  to={createPageUrl("Browse")}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors">
+
                         Browse
                       </Link>
                       <Link
-                        to={createPageUrl("MyRentals")}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors"
-                      >
+                  to={createPageUrl("MyRentals")}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors">
+
                         My Rentals
                       </Link>
                       <Link
-                        to={createPageUrl("Profile")}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors"
-                      >
+                  to={createPageUrl("Profile")}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors">
+
                         <UserCircle className="w-4 h-4" />
                         My Profile
                       </Link>
-                      {user.role === "admin" && (
-                        <Link
-                          to={createPageUrl("AdminDashboard")}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors"
-                        >
+                      {user.role === "admin" &&
+                <Link
+                  to={createPageUrl("AdminDashboard")}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors">
+
                           <Shield className="w-4 h-4" />
                           Admin Panel
                         </Link>
-                      )}
+                }
                       <div className="px-4 py-3 bg-white/5 rounded-lg border border-white/10">
                         <div className="flex items-center gap-2 text-sm text-gray-300">
                           <User className="w-4 h-4" />
@@ -403,43 +403,43 @@ export default function Layout({ children, currentPageName }) {
                         </div>
                       </div>
                       <button
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          handleLogout();
-                        }}
-                        className="w-full px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors flex items-center gap-2"
-                      >
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full px-4 py-3 rounded-lg text-white font-medium hover:bg-white/10 transition-colors flex items-center gap-2">
+
                         <LogOut className="w-4 h-4" />
                         Log Out
                       </button>
-                    </>
-                  ) : (
-                    <>
+                    </> :
+
+              <>
                       <Button
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          handleLogin();
-                        }}
-                        className="btn-ghost w-full"
-                      >
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogin();
+                  }}
+                  className="btn-ghost w-full">
+
                         Log In
                       </Button>
                       <Button
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          handleLogin();
-                        }}
-                        className="btn-primary w-full"
-                      >
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogin();
+                  }}
+                  className="btn-primary w-full">
+
                         Get Started
                       </Button>
                     </>
-                  )}
+              }
                 </>
-              )}
+            }
             </div>
           </div>
-        )}
+        }
       </header>
 
       {/* Main Content */}
@@ -452,34 +452,34 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <Link to={createPageUrl("Browse")} className="flex items-center gap-3">
-              <img 
+              <img
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691721b89e14bc8b401725d6/6b060a1ae_ember-tv-logo.png"
                 alt="Ember TV"
-                className="h-8 w-auto"
-              />
+                className="h-8 w-auto" />
+
             </Link>
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex items-center gap-4">
-                <Link 
+                <Link
                   to={createPageUrl("PrivacyPolicy")}
-                  className="text-gray-500 hover:text-[#EF6418] text-sm transition-colors"
-                >
+                  className="text-gray-500 hover:text-[#EF6418] text-sm transition-colors">
+
                   Privacy Policy
                 </Link>
-                <Link 
+                <Link
                   to={createPageUrl("TermsOfService")}
-                  className="text-gray-500 hover:text-[#EF6418] text-sm transition-colors"
-                >
+                  className="text-gray-500 hover:text-[#EF6418] text-sm transition-colors">
+
                   Terms of Service
                 </Link>
               </div>
-              <p className="text-gray-500 text-sm">
-                © 2025 Ember VOD. Stream faith-focused films anytime.
+              <p className="text-gray-500 text-sm">© 2026 Ember VOD. Stream faith-focused films anytime.
+
               </p>
             </div>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
+
 }
