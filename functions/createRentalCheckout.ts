@@ -98,6 +98,12 @@ Deno.serve(async (req) => {
         film_id: film_id,
         rental_id: rental.id,
         user_id: user.id
+      },
+      payment_intent_data: {
+        metadata: {
+          film_id: film_id,
+          distributor: film.distributor || ''
+        }
       }
     });
 
