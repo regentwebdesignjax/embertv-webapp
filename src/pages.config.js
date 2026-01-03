@@ -5,6 +5,7 @@ import AdminFilmForm from './pages/AdminFilmForm';
 import AdminFilms from './pages/AdminFilms';
 import AdminRentals from './pages/AdminRentals';
 import AdminReviews from './pages/AdminReviews';
+import AdminUsers from './pages/AdminUsers';
 import Browse from './pages/Browse';
 import FilmDetail from './pages/FilmDetail';
 import Home from './pages/Home';
@@ -14,7 +15,6 @@ import Profile from './pages/Profile';
 import RentalCanceled from './pages/RentalCanceled';
 import RentalSuccess from './pages/RentalSuccess';
 import TermsOfService from './pages/TermsOfService';
-import AdminUsers from './pages/AdminUsers';
 import __Layout from './Layout.jsx';
 
 
@@ -26,6 +26,7 @@ export const PAGES = {
     "AdminFilms": AdminFilms,
     "AdminRentals": AdminRentals,
     "AdminReviews": AdminReviews,
+    "AdminUsers": AdminUsers,
     "Browse": Browse,
     "FilmDetail": FilmDetail,
     "Home": Home,
@@ -35,7 +36,6 @@ export const PAGES = {
     "RentalCanceled": RentalCanceled,
     "RentalSuccess": RentalSuccess,
     "TermsOfService": TermsOfService,
-    "AdminUsers": AdminUsers,
 }
 
 export const pagesConfig = {

@@ -34,6 +34,9 @@ export default function AdminFilmForm() {
     rating: "",
     is_published: false,
     is_featured: false,
+    is_new_release: false,
+    is_trending: false,
+    is_leaving_soon: false,
     stripe_product_id: "",
     stripe_price_id: "",
     rental_price_cents: "",
@@ -90,6 +93,9 @@ export default function AdminFilmForm() {
         rating: film.rating || "",
         is_published: film.is_published || false,
         is_featured: film.is_featured || false,
+        is_new_release: film.is_new_release || false,
+        is_trending: film.is_trending || false,
+        is_leaving_soon: film.is_leaving_soon || false,
         stripe_product_id: film.stripe_product_id || "",
         stripe_price_id: film.stripe_price_id || "",
         rental_price_cents: film.rental_price_cents || "",
@@ -543,6 +549,51 @@ export default function AdminFilmForm() {
                       id="is_featured"
                       checked={formData.is_featured}
                       onCheckedChange={(checked) => handleInputChange("is_featured", checked)}
+                      className="data-[state=checked]:bg-[#EF6418]" />
+
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="is_new_release" className="text-white">New Release</Label>
+                      <p className="text-sm text-gray-400 mt-1">
+                        Display in the "New Releases" section
+                      </p>
+                    </div>
+                    <Switch
+                      id="is_new_release"
+                      checked={formData.is_new_release}
+                      onCheckedChange={(checked) => handleInputChange("is_new_release", checked)}
+                      className="data-[state=checked]:bg-[#EF6418]" />
+
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="is_trending" className="text-white">Trending</Label>
+                      <p className="text-sm text-gray-400 mt-1">
+                        Display in the "Trending Now" section
+                      </p>
+                    </div>
+                    <Switch
+                      id="is_trending"
+                      checked={formData.is_trending}
+                      onCheckedChange={(checked) => handleInputChange("is_trending", checked)}
+                      className="data-[state=checked]:bg-[#EF6418]" />
+
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="is_leaving_soon" className="text-white">Leaving Soon</Label>
+                      <p className="text-sm text-gray-400 mt-1">
+                        Display in the "Leaving Soon" section
+                      </p>
+                    </div>
+                    <Switch
+                      id="is_leaving_soon"
+                      checked={formData.is_leaving_soon}
+                      onCheckedChange={(checked) => handleInputChange("is_leaving_soon", checked)}
                       className="data-[state=checked]:bg-[#EF6418]" />
 
                   </div>

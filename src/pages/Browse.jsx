@@ -2,7 +2,7 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Search, Filter, Sparkles } from "lucide-react";
+import { Search, Filter, Sparkles, TrendingUp, Clock, Flame } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -46,6 +46,9 @@ export default function Browse() {
   });
 
   const featuredFilms = films.filter(f => f.is_featured);
+  const newReleases = films.filter(f => f.is_new_release);
+  const trendingFilms = films.filter(f => f.is_trending);
+  const leavingSoon = films.filter(f => f.is_leaving_soon);
   const genres = ["all", ...new Set(films.filter(f => f.genre).map(f => f.genre))];
 
   const filteredFilms = films.filter(film => {
@@ -166,6 +169,78 @@ export default function Browse() {
                 <div className="relative">
                   <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
                     {featuredFilms.map((film, index) => (
+                      <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
+                        <FilmCard film={film} index={index} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.section>
+            )}
+
+            {/* New Releases Row */}
+            {newReleases.length > 0 && !searchQuery && genreFilter === "all" && (
+              <motion.section
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="mb-12"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <Flame className="w-6 h-6 text-[#EF6418]" />
+                  <h2 className="text-2xl md:text-3xl font-bold">New Releases</h2>
+                </div>
+                <div className="relative">
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+                    {newReleases.map((film, index) => (
+                      <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
+                        <FilmCard film={film} index={index} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.section>
+            )}
+
+            {/* Trending Now Row */}
+            {trendingFilms.length > 0 && !searchQuery && genreFilter === "all" && (
+              <motion.section
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="mb-12"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <TrendingUp className="w-6 h-6 text-[#EF6418]" />
+                  <h2 className="text-2xl md:text-3xl font-bold">Trending Now</h2>
+                </div>
+                <div className="relative">
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+                    {trendingFilms.map((film, index) => (
+                      <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
+                        <FilmCard film={film} index={index} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.section>
+            )}
+
+            {/* Leaving Soon Row */}
+            {leavingSoon.length > 0 && !searchQuery && genreFilter === "all" && (
+              <motion.section
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mb-12"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <Clock className="w-6 h-6 text-[#EF6418]" />
+                  <h2 className="text-2xl md:text-3xl font-bold">Leaving Soon</h2>
+                </div>
+                <div className="relative">
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+                    {leavingSoon.map((film, index) => (
                       <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
                         <FilmCard film={film} index={index} />
                       </div>
