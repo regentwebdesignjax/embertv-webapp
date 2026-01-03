@@ -473,7 +473,7 @@ export default function Layout({ children, currentPageName }) {
                   Terms of Service
                 </Link>
               </div>
-              <p className="text-gray-500 text-sm">© 2026 Ember VOD. Stream faith-focused films anytime.
+              <p className="text-gray-500 text-sm">© 2026 EmberTV. All Rights Reserved.
 
               </p>
             </div>
