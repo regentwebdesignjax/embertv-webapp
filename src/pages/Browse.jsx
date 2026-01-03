@@ -84,7 +84,7 @@ export default function Browse() {
       <section className="relative h-[50vh] flex items-center justify-center overflow-hidden mb-12">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1920&q=80"
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691721b89e14bc8b401725d6/2fac85c0f_embertv-browse-header.jpg"
             alt="Browse"
             className="w-full h-full object-cover"
           />
