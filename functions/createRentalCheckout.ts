@@ -102,6 +102,7 @@ Deno.serve(async (req) => {
       payment_intent_data: {
         metadata: {
           film_id: film_id,
+          film_title: film.title,
           distributor: film.distributor || ''
         }
       }
