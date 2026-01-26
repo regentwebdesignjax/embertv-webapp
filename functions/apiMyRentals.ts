@@ -208,6 +208,7 @@ Deno.serve(async (req) => {
               id: film.id,
               slug: film.slug,
               title: film.title,
+              short_description: film.short_description,
               poster_url: film.thumbnail_url,
               hls_url: film.hls_playback_url,
             }
