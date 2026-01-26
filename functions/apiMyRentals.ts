@@ -210,7 +210,6 @@ Deno.serve(async (req) => {
               title: film.title,
               poster_url: film.thumbnail_url,
               hls_url: film.hls_playback_url,
-              short_description: film.short_description,
             }
           : null,
         status: rental.status,
