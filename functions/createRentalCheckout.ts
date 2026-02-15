@@ -1,10 +1,11 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClient, createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import Stripe from 'npm:stripe';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
   apiVersion: '2023-10-16',
 });
 
+// Helper for CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -12,47 +13,60 @@ const corsHeaders = {
   'Content-Type': 'application/json'
 };
 
+// Initialize Admin Client for DB lookups
+function getServiceClient() {
+  return createClient({
+    appId: Deno.env.get("BASE44_APP_ID"),
+    serviceRoleKey: Deno.env.get("BASE44_SERVICE_ROLE_KEY")
+  });
+}
+
 Deno.serve(async (req) => {
+  // 1. Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders
-    });
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   try {
     const body = await req.json();
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const { film_id } = body;
+
+    console.log(`[Checkout] Starting checkout for film_id: ${film_id}`);
+
+    // 2. Authenticate User
+    const requestClient = createClientFromRequest(req);
+    const user = await requestClient.auth.me();
 
     if (!user) {
+      console.error('[Checkout] User not authenticated');
       return Response.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
     }
-
-    const { film_id } = body;
 
     if (!film_id) {
       return Response.json({ error: 'Film ID is required' }, { status: 400, headers: corsHeaders });
     }
 
-    // Get film details using service role to ensure we can read it
-    const films = await base44.asServiceRole.entities.Film.filter({ id: film_id });
+    // 3. Fetch Film (Using Service Client to ensure visibility)
+    const adminClient = getServiceClient();
+    const films = await adminClient.entities.Film.filter({ id: film_id });
     
     if (!films || films.length === 0) {
+      console.error(`[Checkout] Film not found in DB: ${film_id}`);
       return Response.json({ error: 'Film not found' }, { status: 404, headers: corsHeaders });
     }
 
     const film = films[0];
 
-    // Check if film has Stripe Price ID
+    // 4. Validate Stripe Config
     if (!film.stripe_price_id) {
+      console.error(`[Checkout] Film ${film.id} missing stripe_price_id`);
       return Response.json({ 
         error: 'This film is not currently available for rental. Please try again later.' 
       }, { status: 400, headers: corsHeaders });
     }
 
-    // Check if user already has an active rental for this film
-    const existingRentals = await base44.entities.FilmRental.filter({
+    // 5. Check Active Rentals
+    const existingRentals = await adminClient.entities.FilmRental.filter({
       user_id: user.id,
       film_id: film_id,
       status: 'active'
@@ -71,10 +85,11 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Create or retrieve Stripe customer
+    // 6. Get/Create Stripe Customer
     let customerId = user.stripe_customer_id;
 
     if (!customerId) {
+      console.log(`[Checkout] Creating Stripe customer for user ${user.id}`);
       const customer = await stripe.customers.create({
         email: user.email,
         metadata: {
@@ -84,20 +99,20 @@ Deno.serve(async (req) => {
       });
       customerId = customer.id;
 
-      // Update user with Stripe customer ID using service role
-      await base44.asServiceRole.entities.User.update(user.id, {
+      // Update user with Stripe ID
+      await adminClient.entities.User.update(user.id, {
         stripe_customer_id: customerId
       });
     }
 
-    // Create a pending FilmRental record
-    const rental = await base44.entities.FilmRental.create({
+    // 7. Create Pending Rental Record
+    const rental = await adminClient.entities.FilmRental.create({
       user_id: user.id,
       film_id: film_id,
       status: 'pending'
     });
 
-    // Create Stripe Checkout Session using Price ID
+    // 8. Create Stripe Session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       mode: 'payment',
@@ -123,8 +138,8 @@ Deno.serve(async (req) => {
       }
     });
 
-    // Update rental with session ID
-    await base44.entities.FilmRental.update(rental.id, {
+    // 9. Update Rental with Session ID
+    await adminClient.entities.FilmRental.update(rental.id, {
       stripe_checkout_session_id: session.id
     });
 

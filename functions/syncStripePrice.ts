@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClient, createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import Stripe from 'npm:stripe';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
@@ -12,78 +12,77 @@ const corsHeaders = {
   'Content-Type': 'application/json'
 };
 
+function getServiceClient() {
+  return createClient({
+    appId: Deno.env.get("BASE44_APP_ID"),
+    serviceRoleKey: Deno.env.get("BASE44_SERVICE_ROLE_KEY")
+  });
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders
-    });
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   try {
     const body = await req.json();
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const { stripe_product_id, film_id } = body;
+
+    // Authenticate
+    const requestClient = createClientFromRequest(req);
+    const user = await requestClient.auth.me();
 
     if (!user || user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
     }
 
-    const { stripe_product_id, film_id } = body;
-
     if (!stripe_product_id) {
-      return Response.json({ 
-        error: 'Stripe Product ID is required' 
-      }, { status: 400, headers: corsHeaders });
+      return Response.json({ error: 'Stripe Product ID is required' }, { status: 400, headers: corsHeaders });
     }
 
-    // Retrieve the Product from Stripe
-    const product = await stripe.products.retrieve(stripe_product_id);
+    console.log(`[SyncPrice] Fetching product: ${stripe_product_id}`);
 
-    if (!product) {
-      return Response.json({ 
-        error: 'Product not found in Stripe' 
-      }, { status: 404, headers: corsHeaders });
+    // Fetch Product from Stripe
+    let product;
+    try {
+      product = await stripe.products.retrieve(stripe_product_id);
+    } catch (e) {
+      console.error(`[SyncPrice] Product not found in Stripe: ${e.message}`);
+      return Response.json({ error: 'Product not found in Stripe' }, { status: 404, headers: corsHeaders });
     }
 
     let price = null;
 
-    // Check if product has a default_price
     if (product.default_price) {
       const priceId = typeof product.default_price === 'string' 
         ? product.default_price 
         : product.default_price.id;
       price = await stripe.prices.retrieve(priceId);
     } else {
-      // List all prices for this product
       const prices = await stripe.prices.list({
         product: stripe_product_id,
         active: true,
         type: 'one_time',
         limit: 100,
       });
-
-      // Find the first active one-time price
       price = prices.data.find(p => p.active && p.type === 'one_time');
     }
 
     if (!price) {
       return Response.json({ 
-        error: 'No active one-time Price found for this Stripe Product. Please configure at least one active one-time Price in Stripe.' 
+        error: 'No active one-time Price found for this Stripe Product.' 
       }, { status: 400, headers: corsHeaders });
     }
 
-    // Prepare the update data
-    const updateData = {
-      stripe_product_id: stripe_product_id,
-      stripe_price_id: price.id,
-      rental_price_cents: price.unit_amount,
-      rental_currency: price.currency,
-    };
-
-    // Update the film using service role
+    // Update Film
     if (film_id) {
-      await base44.asServiceRole.entities.Film.update(film_id, updateData);
+      const adminClient = getServiceClient();
+      await adminClient.entities.Film.update(film_id, {
+        stripe_product_id: stripe_product_id,
+        stripe_price_id: price.id,
+        rental_price_cents: price.unit_amount,
+        rental_currency: price.currency,
+      });
     }
 
     return Response.json({
