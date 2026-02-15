@@ -105,7 +105,7 @@ export default function Browse() {
               )}
             </h1>
             <p className="text-xl text-gray-300">
-              Rent any film for 24-hour unlimited access
+              Rent any film for 48-hour unlimited access
             </p>
           </motion.div>
         </div>

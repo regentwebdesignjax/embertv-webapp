@@ -82,7 +82,7 @@ export default function PrivacyPolicy() {
                   <h3 className="text-xl font-semibold text-white mb-2">2.3 Rental Activity</h3>
                   <p className="text-gray-300 mb-2">We track information related to your rental activity, such as:</p>
                   <ul className="list-disc list-inside text-gray-300 space-y-1 ml-4">
-                    <li>Rental timestamps (purchase date and expiration)</li>
+                    <li>Rental timestamps (purchase date and 48-hour expiration)</li>
                     <li>Rental counts</li>
                     <li>Transaction metadata from Stripe (gross and net amounts)</li>
                   </ul>

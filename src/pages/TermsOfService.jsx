@@ -64,8 +64,8 @@ export default function TermsOfService() {
               <h2 className="text-2xl font-bold text-white mb-4">3. Rentals & Access Window</h2>
               <ul className="list-disc list-inside text-gray-300 space-y-2 ml-4">
                 <li>Films on Ember are available for rental only, not purchase.</li>
-                <li>Each rental provides 24-hour access from the time of successful payment.</li>
-                <li>After 24 hours, access expires automatically.</li>
+                <li>Each rental provides 48-hour access from the time of successful payment.</li>
+                <li>After 48 hours, access expires automatically.</li>
                 <li>To watch again, you must rent the film again.</li>
               </ul>
             </div>

@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
       // Update if still pending or missing payment data
       if (rental.status === 'pending' || !rental.amount_cents || !rental.net_amount_cents) {
         const purchasedAt = new Date(session.created * 1000);
-        const expiresAt = new Date(purchasedAt.getTime() + 24 * 60 * 60 * 1000);
+        const expiresAt = new Date(purchasedAt.getTime() + 48 * 60 * 60 * 1000);
 
         // Fetch payment intent to get balance transaction for net revenue
         let netAmountCents = null;
