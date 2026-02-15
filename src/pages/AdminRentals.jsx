@@ -122,7 +122,7 @@ export default function AdminRentals() {
   const reactivateRentalMutation = useMutation({
     mutationFn: async (rentalId) => {
       const newExpiresAt = new Date();
-      newExpiresAt.setHours(newExpiresAt.getHours() + 48);
+      newExpiresAt.setHours(newExpiresAt.getHours() + 24);
       await base44.entities.FilmRental.update(rentalId, {
         status: "active",
         expires_at: newExpiresAt.toISOString(),
@@ -164,7 +164,7 @@ export default function AdminRentals() {
   const awardRentalMutation = useMutation({
     mutationFn: async ({ userId, filmId }) => {
       const now = new Date();
-      const expiresAt = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+      const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
       
       await base44.entities.FilmRental.create({
         user_id: userId,
@@ -553,7 +553,7 @@ export default function AdminRentals() {
             <AlertDialogTitle className="text-white">Reactivate Rental</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-400">
               Are you sure you want to reactivate this rental? The user will regain
-              access to the film for 48 hours from now.
+              access to the film for 24 hours from now.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -579,7 +579,7 @@ export default function AdminRentals() {
               Award Free Rental
             </DialogTitle>
             <DialogDescription className="text-gray-400">
-              Grant a user free 48-hour access to any film
+              Grant a user free 24-hour access to any film
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">

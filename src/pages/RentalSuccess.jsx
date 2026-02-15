@@ -63,7 +63,7 @@ export default function RentalSuccess() {
       // If webhook hasn't processed yet (rental still pending), activate it
       if (rentalRecord.status === "pending") {
         const purchasedAt = new Date();
-        const expiresAt = new Date(purchasedAt.getTime() + 48 * 60 * 60 * 1000);
+        const expiresAt = new Date(purchasedAt.getTime() + 24 * 60 * 60 * 1000);
 
         // Only update status and dates - preserve amount fields set by webhook
         await base44.entities.FilmRental.update(rentalRecord.id, {
@@ -163,7 +163,7 @@ export default function RentalSuccess() {
 
               {/* Subheading */}
               <p className="text-lg text-[#F4EDE5]/80 mb-8">
-                You now have 48-hour access to watch
+                You now have 24-hour access to watch
               </p>
 
               {film &&
