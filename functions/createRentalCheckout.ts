@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     const adminClient = getServiceClient();
     
     // Fetch film
-    const films = await adminClient.entities.Film.filter({ id: film_id });
+    const films = await adminClient.asServiceRole.entities.Film.filter({ id: film_id });
     
     if (!films || films.length === 0) {
       console.error(`[Checkout] Film not found in database: ${film_id}`);
@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
     }
 
     // 4. Check for Existing Active Rentals
-    const existingRentals = await adminClient.entities.FilmRental.filter({
+    const existingRentals = await adminClient.asServiceRole.entities.FilmRental.filter({
       user_id: user.id,
       film_id: film_id,
       status: 'active'
@@ -101,13 +101,13 @@ Deno.serve(async (req) => {
       customerId = customer.id;
 
       // Save Stripe ID to user record using Admin Client
-      await adminClient.entities.User.update(user.id, {
+      await adminClient.asServiceRole.entities.User.update(user.id, {
         stripe_customer_id: customerId
       });
     }
 
     // 6. Create Pending Rental Record
-    const rental = await adminClient.entities.FilmRental.create({
+    const rental = await adminClient.asServiceRole.entities.FilmRental.create({
       user_id: user.id,
       film_id: film_id,
       status: 'pending'
@@ -140,7 +140,7 @@ Deno.serve(async (req) => {
     });
 
     // 8. Update Rental with Session ID
-    await adminClient.entities.FilmRental.update(rental.id, {
+    await adminClient.asServiceRole.entities.FilmRental.update(rental.id, {
       stripe_checkout_session_id: session.id
     });
 
