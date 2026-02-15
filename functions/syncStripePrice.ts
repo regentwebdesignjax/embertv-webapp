@@ -1,4 +1,4 @@
-import { createClient, createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 import Stripe from 'npm:stripe';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
@@ -12,13 +12,6 @@ const corsHeaders = {
   'Content-Type': 'application/json'
 };
 
-function getServiceClient() {
-  return createClient({
-    appId: Deno.env.get("BASE44_APP_ID"),
-    serviceRoleKey: Deno.env.get("BASE44_SERVICE_ROLE_KEY")
-  });
-}
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders });
@@ -28,9 +21,9 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { stripe_product_id, film_id } = body;
 
-    // Authenticate Admin User
-    const requestClient = createClientFromRequest(req);
-    const user = await requestClient.auth.me();
+    // Create Base44 client from request
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
 
     if (!user || user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
@@ -82,10 +75,9 @@ Deno.serve(async (req) => {
       }, { status: 400, headers: corsHeaders });
     }
 
-    // Update Film in DB using Admin Client
+    // Update Film in DB using service role
     if (film_id) {
-      const adminClient = getServiceClient();
-      await adminClient.entities.Film.update(film_id, {
+      await base44.asServiceRole.entities.Film.update(film_id, {
         stripe_product_id: stripe_product_id,
         stripe_price_id: price.id,
         rental_price_cents: price.unit_amount,
