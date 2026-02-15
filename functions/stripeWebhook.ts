@@ -107,11 +107,11 @@ Deno.serve(async (req) => {
         console.log(`Found ${rentals.length} rentals to refund`);
 
         for (const rental of rentals) {
-          // Mark rental as expired/refunded so it's no longer active
+          // Mark rental as refunded so it's excluded from revenue calculations
           await base44.entities.FilmRental.update(rental.id, {
-            status: 'expired'
+            status: 'refunded'
           });
-          console.log(`Deactivated rental ${rental.id} due to refund`);
+          console.log(`Marked rental ${rental.id} as refunded`);
         }
         break;
       }

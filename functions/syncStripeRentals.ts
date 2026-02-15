@@ -56,30 +56,43 @@ Deno.serve(async (req) => {
 
       const rental = existingRentals[0];
 
-      // Update if still pending or missing payment data
-      if (rental.status === 'pending' || !rental.amount_cents || !rental.net_amount_cents) {
+      // Fetch payment intent to check refund status and get balance transaction
+      let isRefunded = false;
+      let netAmountCents = null;
+      if (session.payment_intent) {
+        try {
+          const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
+            expand: ['latest_charge.balance_transaction']
+          });
+          
+          // Check if the charge has been refunded
+          isRefunded = paymentIntent.latest_charge?.refunded === true;
+          
+          const balanceTransaction = paymentIntent.latest_charge?.balance_transaction;
+          if (balanceTransaction && typeof balanceTransaction === 'object') {
+            netAmountCents = balanceTransaction.net;
+          }
+        } catch (error) {
+          console.error(`Failed to fetch payment intent for rental ${rental.id}:`, error);
+        }
+      }
+
+      // Update if:
+      // - Status is pending or missing payment data
+      // - Refund status changed (was not refunded before but is now, or vice versa)
+      const needsUpdate = 
+        rental.status === 'pending' || 
+        !rental.amount_cents || 
+        !rental.net_amount_cents ||
+        (isRefunded && rental.status !== 'refunded') ||
+        (!isRefunded && rental.status === 'refunded');
+
+      if (needsUpdate) {
         const purchasedAt = new Date(session.created * 1000);
         const expiresAt = new Date(purchasedAt.getTime() + 48 * 60 * 60 * 1000);
 
-        // Fetch payment intent to get balance transaction for net revenue
-        let netAmountCents = null;
-        if (session.payment_intent) {
-          try {
-            const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
-              expand: ['latest_charge.balance_transaction']
-            });
-            
-            const balanceTransaction = paymentIntent.latest_charge?.balance_transaction;
-            if (balanceTransaction && typeof balanceTransaction === 'object') {
-              netAmountCents = balanceTransaction.net;
-            }
-          } catch (error) {
-            console.error(`Failed to fetch balance transaction for rental ${rental.id}:`, error);
-          }
-        }
-
         const updateData = {
-          status: 'active',
+          status: isRefunded ? 'refunded' : 'active',
           stripe_payment_intent_id: session.payment_intent,
           purchased_at: purchasedAt.toISOString(),
           expires_at: expiresAt.toISOString(),
@@ -94,7 +107,7 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.entities.FilmRental.update(rental.id, updateData);
 
         synced++;
-        console.log(`Synced rental ${rental.id} with net revenue: ${netAmountCents}`);
+        console.log(`Synced rental ${rental.id} with status ${updateData.status} and net revenue: ${netAmountCents}`);
       } else {
         skipped++;
       }
