@@ -12,8 +12,8 @@ export default function TermsOfService() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
+          className="mb-8">
+
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-[#EF6418] to-[#D55514] rounded-xl flex items-center justify-center">
               <FileText className="w-6 h-6 text-white" />
@@ -27,8 +27,8 @@ export default function TermsOfService() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="prose prose-invert prose-lg max-w-none"
-        >
+          className="prose prose-invert prose-lg max-w-none">
+
           <div className="bg-[#1A1A1A] border border-[#333333] rounded-xl p-8 space-y-8">
             <div>
               <p className="text-gray-300 leading-relaxed">
@@ -200,9 +200,9 @@ export default function TermsOfService() {
             <div>
               <h2 className="text-2xl font-bold text-white mb-4">15. Contact</h2>
               <div className="text-gray-300 space-y-1">
-                <p><a href="mailto:support@regentmediagroup.com" className="text-[#EF6418] hover:text-[#D55514] transition-colors">support@regentmediagroup.com</a></p>
-                <p>5578 Blue Pacific Drive</p>
-                <p>Jacksonville, FL 32257</p>
+                <p><a href="mailto:support@regentmediagroup.com" className="text-[#EF6418] hover:text-[#D55514] transition-colors">embertv@regentmediagroup.com</a></p>
+                
+                
               </div>
             </div>
 
@@ -212,6 +212,6 @@ export default function TermsOfService() {
           </div>
         </motion.div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
