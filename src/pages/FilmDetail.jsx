@@ -127,32 +127,19 @@ export default function FilmDetail() {
     setErrorMessage(null);
 
     try {
-      // Get fresh token from localStorage
-      const token = localStorage.getItem('access_token');
-      
-      // Make direct fetch call with Authorization header
-      const response = await fetch(`${window.location.origin}/api/functions/createRentalCheckout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          film_id: films[0].id
-        })
+      const response = await base44.functions.invoke('createRentalCheckout', {
+        film_id: films[0].id
       });
 
-      const data = await response.json();
-
-      if (data.checkout_url) {
-        window.location.href = data.checkout_url;
+      if (response.data.checkout_url) {
+        window.location.href = response.data.checkout_url;
       } else {
-        setErrorMessage(data.error || 'Failed to create checkout session');
+        setErrorMessage(response.data.error || 'Failed to create checkout session');
         setRentingInProgress(false);
       }
     } catch (error) {
       console.error('Error creating rental:', error);
-      const errorMsg = error.message || 'Failed to start rental process. Please try again.';
+      const errorMsg = error.response?.data?.error || error.message || 'Failed to start rental process. Please try again.';
       setErrorMessage(errorMsg);
       setRentingInProgress(false);
     }
