@@ -40,27 +40,12 @@ Deno.serve(async (req) => {
 
     console.log(`[Checkout] Processing rental for film_id: ${film_id}`);
 
-    // Extract and verify authorization token
-    const authHeader = req.headers.get('Authorization');
-    console.log(`[Checkout] Auth header present: ${!!authHeader}`);
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.error('[Checkout] Missing or invalid Authorization header');
-      return Response.json({ error: 'Unauthorized - Please log in again' }, { status: 401, headers: corsHeaders });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    
-    // Create authenticated client with the token
-    const authClient = createClient({
-      appId: appId,
-      accessToken: token
-    });
-    
-    const user = await authClient.auth.me();
+    // Authenticate User using request client
+    const requestClient = createClientFromRequest(req);
+    const user = await requestClient.auth.me();
 
     if (!user) {
-      console.error('[Checkout] User authentication failed with provided token');
+      console.error('[Checkout] User authentication failed');
       return Response.json({ error: 'Unauthorized - Please log in again' }, { status: 401, headers: corsHeaders });
     }
 
