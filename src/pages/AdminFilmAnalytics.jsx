@@ -59,27 +59,30 @@ export default function AdminFilmAnalytics() {
       if (!filmId) return [];
       const allRentals = await base44.entities.FilmRental.filter({
         film_id: filmId,
-        status: ["active", "expired"]
+        status: ["active", "expired", "refunded"]
       }, '-purchased_at');
-      return allRentals.filter((r) => r.status === 'active' || r.status === 'expired');
+      return allRentals.filter((r) => r.status === 'active' || r.status === 'expired' || r.status === 'refunded');
     },
     enabled: !!filmId,
     initialData: []
   });
 
   const calculateMetrics = () => {
-    const totalRentals = rentals.length;
-    const totalRevenue = rentals.reduce((sum, r) => sum + (r.amount_cents || 0), 0);
+    // Exclude refunded rentals from counts and revenue
+    const validRentals = rentals.filter(r => r.status !== 'refunded');
 
-    const firstRental = rentals.length > 0 ?
-    rentals.reduce((earliest, r) => {
+    const totalRentals = validRentals.length;
+    const totalRevenue = validRentals.reduce((sum, r) => sum + (r.amount_cents || 0), 0);
+
+    const firstRental = validRentals.length > 0 ?
+    validRentals.reduce((earliest, r) => {
       const date = new Date(r.purchased_at);
       return !earliest || date < earliest ? date : earliest;
     }, null) :
     null;
 
-    const latestRental = rentals.length > 0 ?
-    rentals.reduce((latest, r) => {
+    const latestRental = validRentals.length > 0 ?
+    validRentals.reduce((latest, r) => {
       const date = new Date(r.purchased_at);
       return !latest || date > latest ? date : latest;
     }, null) :
@@ -87,7 +90,7 @@ export default function AdminFilmAnalytics() {
 
     // Group by month
     const monthlyData = {};
-    rentals.forEach((rental) => {
+    validRentals.forEach((rental) => {
       if (!rental.purchased_at) return;
       const date = new Date(rental.purchased_at);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;

@@ -46,9 +46,9 @@ export default function AdminAnalytics() {
     queryKey: ['analytics-rentals'],
     queryFn: async () => {
       const allRentals = await base44.entities.FilmRental.filter({
-        status: ["active", "expired"]
+        status: ["active", "expired", "refunded"]
       }, '-purchased_at');
-      return allRentals.filter(r => r.status === 'active' || r.status === 'expired');
+      return allRentals.filter(r => r.status === 'active' || r.status === 'expired' || r.status === 'refunded');
     },
     initialData: [],
   });
@@ -63,10 +63,13 @@ export default function AdminAnalytics() {
     const now = new Date();
     const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-    const totalRentals = rentals.length;
-    const totalRevenue = rentals.reduce((sum, r) => sum + (r.amount_cents || 0), 0);
+    // Exclude refunded rentals from counts and revenue
+    const validRentals = rentals.filter(r => r.status !== 'refunded');
 
-    const currentMonthRentals = rentals.filter(r => {
+    const totalRentals = validRentals.length;
+    const totalRevenue = validRentals.reduce((sum, r) => sum + (r.amount_cents || 0), 0);
+
+    const currentMonthRentals = validRentals.filter(r => {
       if (!r.purchased_at) return false;
       const rentalDate = new Date(r.purchased_at);
       const rentalMonth = `${rentalDate.getFullYear()}-${String(rentalDate.getMonth() + 1).padStart(2, '0')}`;
@@ -78,7 +81,7 @@ export default function AdminAnalytics() {
 
     // Calculate per-film metrics
     const filmMetrics = films.map(film => {
-      const filmRentals = rentals.filter(r => r.film_id === film.id);
+      const filmRentals = validRentals.filter(r => r.film_id === film.id);
       const filmMonthlyRentals = currentMonthRentals.filter(r => r.film_id === film.id);
 
       return {
