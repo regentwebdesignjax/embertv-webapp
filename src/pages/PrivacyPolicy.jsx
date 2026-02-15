@@ -267,7 +267,7 @@ export default function PrivacyPolicy() {
             <div>
               <h2 className="text-2xl font-bold text-white mb-4">11. Contact Us</h2>
               <p className="text-gray-300">
-                For questions, concerns, or deletion requests: <a href="mailto:support@regentmediagroup.com" className="text-[#EF6418] hover:text-[#D55514] transition-colors">support@regentmediagroup.com</a>
+                For questions, concerns, or deletion requests: <a href="mailto:support@regentmediagroup.com" className="text-[#EF6418] hover:text-[#D55514] transition-colors">embertv@regentmediagroup.com</a>
               </p>
             </div>
 
