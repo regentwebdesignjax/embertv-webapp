@@ -12,12 +12,13 @@ const corsHeaders = {
   'Content-Type': 'application/json'
 };
 
-// Initialize Admin Client for privileged DB operations
+// Initialize Service Role Client for privileged DB operations
 function getServiceClient() {
-  return createClient({
+  const client = createClient({
     appId: Deno.env.get("BASE44_APP_ID"),
     serviceRoleKey: Deno.env.get("BASE44_SERVICE_ROLE_KEY")
   });
+  return client.asServiceRole;
 }
 
 Deno.serve(async (req) => {
@@ -46,10 +47,10 @@ Deno.serve(async (req) => {
     }
 
     // 3. Fetch Data using Service Client (Bypasses RLS)
-    const adminClient = getServiceClient();
+    const serviceRole = getServiceClient();
     
     // Fetch film
-    const films = await adminClient.asServiceRole.entities.Film.filter({ id: film_id });
+    const films = await serviceRole.entities.Film.filter({ id: film_id });
     
     if (!films || films.length === 0) {
       console.error(`[Checkout] Film not found in database: ${film_id}`);
@@ -67,7 +68,7 @@ Deno.serve(async (req) => {
     }
 
     // 4. Check for Existing Active Rentals
-    const existingRentals = await adminClient.asServiceRole.entities.FilmRental.filter({
+    const existingRentals = await serviceRole.entities.FilmRental.filter({
       user_id: user.id,
       film_id: film_id,
       status: 'active'
@@ -100,14 +101,14 @@ Deno.serve(async (req) => {
       });
       customerId = customer.id;
 
-      // Save Stripe ID to user record using Admin Client
-      await adminClient.asServiceRole.entities.User.update(user.id, {
+      // Save Stripe ID to user record using Service Role
+      await serviceRole.entities.User.update(user.id, {
         stripe_customer_id: customerId
       });
     }
 
     // 6. Create Pending Rental Record
-    const rental = await adminClient.asServiceRole.entities.FilmRental.create({
+    const rental = await serviceRole.entities.FilmRental.create({
       user_id: user.id,
       film_id: film_id,
       status: 'pending'
@@ -140,7 +141,7 @@ Deno.serve(async (req) => {
     });
 
     // 8. Update Rental with Session ID
-    await adminClient.asServiceRole.entities.FilmRental.update(rental.id, {
+    await serviceRole.entities.FilmRental.update(rental.id, {
       stripe_checkout_session_id: session.id
     });
 
