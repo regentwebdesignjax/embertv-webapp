@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import Stripe from 'npm:stripe';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
@@ -7,6 +7,7 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
 
 Deno.serve(async (req) => {
   try {
+    const body = await req.json();
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
@@ -14,7 +15,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { stripe_product_id, film_id } = await req.json();
+    const { stripe_product_id, film_id } = body;
 
     if (!stripe_product_id) {
       return Response.json({ 
