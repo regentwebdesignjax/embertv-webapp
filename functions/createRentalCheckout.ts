@@ -82,6 +82,9 @@ Deno.serve(async (req) => {
       status: 'pending'
     });
 
+    // Get origin URL for redirects
+    const origin = req.headers.get('origin') || req.headers.get('referer')?.split('/').slice(0, 3).join('/') || 'https://app.base44.com';
+    
     // Create Stripe Checkout Session using Price ID
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -92,8 +95,8 @@ Deno.serve(async (req) => {
           quantity: 1,
         },
       ],
-      success_url: `${req.headers.get('origin')}/RentalSuccess?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get('origin')}/RentalCanceled?film_slug=${film.slug}`,
+      success_url: `${origin}/RentalSuccess?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/RentalCanceled?film_slug=${film.slug}`,
       metadata: {
         film_id: film_id,
         rental_id: rental.id,
