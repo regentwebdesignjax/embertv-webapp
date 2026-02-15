@@ -5,27 +5,41 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
   apiVersion: '2023-10-16',
 });
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Content-Type': 'application/json'
+};
+
 Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders
+    });
+  }
+
   try {
     const body = await req.json();
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
     if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      return Response.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
     }
 
     const { film_id } = body;
 
     if (!film_id) {
-      return Response.json({ error: 'Film ID is required' }, { status: 400 });
+      return Response.json({ error: 'Film ID is required' }, { status: 400, headers: corsHeaders });
     }
 
     // Get film details using service role to ensure we can read it
     const films = await base44.asServiceRole.entities.Film.filter({ id: film_id });
     
     if (!films || films.length === 0) {
-      return Response.json({ error: 'Film not found' }, { status: 404 });
+      return Response.json({ error: 'Film not found' }, { status: 404, headers: corsHeaders });
     }
 
     const film = films[0];
@@ -34,7 +48,7 @@ Deno.serve(async (req) => {
     if (!film.stripe_price_id) {
       return Response.json({ 
         error: 'This film is not currently available for rental. Please try again later.' 
-      }, { status: 400 });
+      }, { status: 400, headers: corsHeaders });
     }
 
     // Check if user already has an active rental for this film
@@ -53,7 +67,7 @@ Deno.serve(async (req) => {
         return Response.json({ 
           error: 'You already have an active rental for this film',
           rental_id: rental.id
-        }, { status: 400 });
+        }, { status: 400, headers: corsHeaders });
       }
     }
 
@@ -117,12 +131,12 @@ Deno.serve(async (req) => {
     return Response.json({
       checkout_url: session.url,
       session_id: session.id
-    });
+    }, { headers: corsHeaders });
 
   } catch (error) {
     console.error('Error creating rental checkout:', error);
     return Response.json({ 
       error: error.message || 'Failed to create checkout session' 
-    }, { status: 500 });
+    }, { status: 500, headers: corsHeaders });
   }
 });

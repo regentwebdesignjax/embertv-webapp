@@ -5,14 +5,28 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
   apiVersion: '2023-10-16',
 });
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Content-Type': 'application/json'
+};
+
 Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders
+    });
+  }
+
   try {
     const body = await req.json();
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
     if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      return Response.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
     }
 
     const { stripe_product_id, film_id } = body;
@@ -20,7 +34,7 @@ Deno.serve(async (req) => {
     if (!stripe_product_id) {
       return Response.json({ 
         error: 'Stripe Product ID is required' 
-      }, { status: 400 });
+      }, { status: 400, headers: corsHeaders });
     }
 
     // Retrieve the Product from Stripe
@@ -29,7 +43,7 @@ Deno.serve(async (req) => {
     if (!product) {
       return Response.json({ 
         error: 'Product not found in Stripe' 
-      }, { status: 404 });
+      }, { status: 404, headers: corsHeaders });
     }
 
     let price = null;
@@ -56,7 +70,7 @@ Deno.serve(async (req) => {
     if (!price) {
       return Response.json({ 
         error: 'No active one-time Price found for this Stripe Product. Please configure at least one active one-time Price in Stripe.' 
-      }, { status: 400 });
+      }, { status: 400, headers: corsHeaders });
     }
 
     // Prepare the update data
@@ -80,12 +94,12 @@ Deno.serve(async (req) => {
         rental_currency: price.currency,
         formatted_price: `${(price.unit_amount / 100).toFixed(2)} ${price.currency.toUpperCase()}`,
       }
-    });
+    }, { headers: corsHeaders });
 
   } catch (error) {
     console.error('Error syncing Stripe price:', error);
     return Response.json({ 
       error: error.message || 'Failed to sync price from Stripe' 
-    }, { status: 500 });
+    }, { status: 500, headers: corsHeaders });
   }
 });
