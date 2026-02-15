@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
         
         if (session.metadata?.rental_id) {
           const purchasedAt = new Date();
-          const expiresAt = new Date(purchasedAt.getTime() + 48 * 60 * 60 * 1000);
+          const expiresAt = new Date(purchasedAt.getTime() + 24 * 60 * 60 * 1000);
 
           console.log('Updating rental:', session.metadata.rental_id);
           console.log('Update data:', {
