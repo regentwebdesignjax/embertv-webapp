@@ -41,8 +41,8 @@ export default function TermsOfService() {
 
             <div>
               <h2 className="text-2xl font-bold text-white mb-4">1. Eligibility</h2>
-              <p className="text-gray-300 leading-relaxed">
-                You must be 18 years or older to create an account or use Ember.
+              <p className="text-gray-300 leading-relaxed">You must be 18 years or older to create an account or use EmberTV.
+
               </p>
             </div>
 
