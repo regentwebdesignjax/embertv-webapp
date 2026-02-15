@@ -42,30 +42,38 @@ Deno.serve(async (req) => {
 
     console.log(`[SyncPrice] Fetching Stripe product: ${stripe_product_id}`);
 
-    // Retrieve Product from Stripe
+    // Retrieve Product from Stripe with expanded default_price
     let product;
     try {
-      product = await stripe.products.retrieve(stripe_product_id);
+      product = await stripe.products.retrieve(stripe_product_id, {
+        expand: ['default_price']
+      });
     } catch (e) {
       console.error(`[SyncPrice] Stripe Error: ${e.message}`);
       return Response.json({ error: 'Product not found in Stripe' }, { status: 404, headers: corsHeaders });
     }
 
-    // Find Price
-    let price = null;
-    if (product.default_price) {
-      const priceId = typeof product.default_price === 'string' 
-        ? product.default_price 
-        : product.default_price.id;
-      price = await stripe.prices.retrieve(priceId);
-    } else {
-      const prices = await stripe.prices.list({
-        product: stripe_product_id,
-        active: true,
-        type: 'one_time',
-        limit: 100,
-      });
-      price = prices.data.find(p => p.active && p.type === 'one_time');
+    // Find the most recent active one-time price
+    const prices = await stripe.prices.list({
+      product: stripe_product_id,
+      active: true,
+      type: 'one_time',
+      limit: 100,
+    });
+
+    // Sort by created date (newest first) and get the first active one-time price
+    const sortedPrices = prices.data.sort((a, b) => b.created - a.created);
+    let price = sortedPrices[0];
+
+    // If product has a default_price that's active, prefer that
+    if (product.default_price && typeof product.default_price === 'object' && product.default_price.active) {
+      price = product.default_price;
+    } else if (product.default_price && typeof product.default_price === 'string') {
+      // If default_price is just an ID, check if it's in our sorted list
+      const defaultPrice = sortedPrices.find(p => p.id === product.default_price);
+      if (defaultPrice && defaultPrice.active) {
+        price = defaultPrice;
+      }
     }
 
     if (!price) {
