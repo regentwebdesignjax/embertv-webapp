@@ -1,4 +1,4 @@
-import { createClient, createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClient, createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import Stripe from 'npm:stripe';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY_LIVE"), {
@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     const user = await requestClient.auth.me();
 
     if (!user) {
-      console.error('[Checkout] User authentication failed');
+      console.error('[Checkout] User authentication failed. Authorization header missing or invalid.');
       return Response.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
     }
 
@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Film ID is required' }, { status: 400, headers: corsHeaders });
     }
 
-    // 3. Fetch Data using Service Client (Bypasses RLS/permissions issues)
+    // 3. Fetch Data using Service Client (Bypasses RLS)
     const adminClient = getServiceClient();
     
     // Fetch film
