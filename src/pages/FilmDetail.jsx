@@ -321,7 +321,7 @@ export default function FilmDetail() {
                       <div className="text-center">
                         <h3 className="text-xl font-bold mb-3">Watch the Full Film</h3>
                         <p className="text-gray-300 mb-6">
-                          Log in or sign up to rent this film for 24-hour access
+                          Log in or sign up to rent this film for 48-hour access
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3 justify-center">
                           <Button
@@ -343,13 +343,13 @@ export default function FilmDetail() {
                       <div className="text-center">
                         <h3 className="text-[#FFFFFF] mb-2 text-xl font-bold">Rent This Film</h3>
                         <p className="text-gray-300 mb-6">
-                          Get 24-hour unlimited access to the full film
+                          Get 48-hour unlimited access to the full film
                         </p>
                         <div className="mb-6">
                           <div className="text-5xl font-bold text-[#EF6418] mb-2">
                             ${rentalPrice}
                           </div>
-                          <p className="text-sm text-gray-400">24-hour rental</p>
+                          <p className="text-sm text-gray-400">48-hour rental</p>
                         </div>
                         <Button
                           onClick={handleRentClick}
@@ -565,7 +565,7 @@ export default function FilmDetail() {
                   <div>
                     <p className="text-gray-500 text-sm mb-1">Rental Price</p>
                     <p className="text-white font-bold text-2xl">${rentalPrice}</p>
-                    <p className="text-gray-400 text-sm">24-hour access</p>
+                    <p className="text-gray-400 text-sm">48-hour access</p>
                   </div>
                 )}
               </div>
