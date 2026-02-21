@@ -29,7 +29,7 @@ async function verifyToken(token) {
   return payload;
 }
 
-// Base44 GET using the same header style you originally had
+// Base44 GET
 async function base44Get(path) {
   const res = await fetch(apiUrl(path), {
     method: "GET",
@@ -48,7 +48,7 @@ async function base44Get(path) {
   return res.json();
 }
 
-// Base44 PUT (for auto-expiring rentals)
+// Base44 PUT
 async function base44Put(path, body) {
   const res = await fetch(apiUrl(path), {
     method: "PUT",
@@ -94,9 +94,7 @@ Deno.serve(async (req) => {
     );
   }
 
-  // Basic config sanity check
   if (!APP_ID || !API_KEY) {
-    console.error("Missing APP_ID or API_KEY");
     return Response.json(
       { error: "Server misconfigured" },
       {
@@ -107,17 +105,14 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // 1) Extract and verify the Ember JWT from Authorization: Bearer <token>
+    // 1) Extract and verify the Ember JWT
     const authHeader = req.headers.get("Authorization") || "";
     const [, token] = authHeader.split(" ");
 
     if (!token) {
       return Response.json(
         { error: "unauthorized", message: "Missing bearer token" },
-        {
-          status: 401,
-          headers: { "Access-Control-Allow-Origin": "*" },
-        },
+        { status: 401, headers: { "Access-Control-Allow-Origin": "*" } }
       );
     }
 
@@ -125,13 +120,9 @@ Deno.serve(async (req) => {
     try {
       payload = await verifyToken(token);
     } catch (err) {
-      console.error("JWT verification failed:", err);
       return Response.json(
         { error: "unauthorized", message: "Invalid or expired token" },
-        {
-          status: 401,
-          headers: { "Access-Control-Allow-Origin": "*" },
-        },
+        { status: 401, headers: { "Access-Control-Allow-Origin": "*" } }
       );
     }
 
@@ -139,43 +130,32 @@ Deno.serve(async (req) => {
     if (!userId) {
       return Response.json(
         { error: "unauthorized", message: "Token missing userId" },
-        {
-          status: 401,
-          headers: { "Access-Control-Allow-Origin": "*" },
-        },
+        { status: 401, headers: { "Access-Control-Allow-Origin": "*" } }
       );
     }
 
-    // 2) Fetch ALL FilmRental entities (service-level API key)
+    // 2) Fetch rentals
     const rentals = await base44Get(`/entities/FilmRental`);
     const now = new Date();
 
-    // 3) Auto-expire any past-due rentals (for everyone, as before)
-    for (const rental of rentals) {
-      if (
-        rental.status === "active" &&
-        rental.expires_at &&
-        new Date(rental.expires_at) <= now
-      ) {
-        await base44Put(`/entities/FilmRental/${rental.id}`, {
-          status: "expired",
-        });
-        rental.status = "expired";
+    // 🛠️ FIX 3: Filter for the CURRENT USER FIRST, rather than auto-expiring the entire global database.
+    const userRentals = rentals.filter((rental) => rental.user_id === userId);
+    const activeRentalsForUser = [];
+
+    // 3) Auto-expire past-due rentals ONLY for this user, keep active ones
+    for (const rental of userRentals) {
+      if (rental.status === "active") {
+        if (rental.expires_at && new Date(rental.expires_at) <= now) {
+          await base44Put(`/entities/FilmRental/${rental.id}`, {
+            status: "expired",
+          });
+        } else {
+          activeRentalsForUser.push(rental);
+        }
       }
     }
 
-    // 4) Filter rentals:
-    //    - belong to the current user
-    //    - status === "active"
-    //    - expires_at is in the future (or null)
-    const activeRentalsForUser = rentals.filter((rental) => {
-      if (rental.user_id !== userId) return false;
-      if (rental.status !== "active") return false;
-      if (!rental.expires_at) return true;
-      return new Date(rental.expires_at) > now;
-    });
-
-    // 5) If none, return empty data
+    // 4) If none, return empty data
     if (!activeRentalsForUser.length) {
       return Response.json(
         { data: [] },
@@ -185,11 +165,11 @@ Deno.serve(async (req) => {
             "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     }
 
-    // 6) Fetch Film details for each active rental
+    // 5) Fetch Film details for each active rental
     const filmIds = [...new Set(activeRentalsForUser.map((r) => r.film_id))];
     const filmsMap = {};
 
@@ -198,7 +178,7 @@ Deno.serve(async (req) => {
       filmsMap[film.id] = film;
     }
 
-    // 7) Build response in the shape the tvOS app expects
+    // 6) Build response in the shape the tvOS app expects
     const rentalData = activeRentalsForUser.map((rental) => {
       const film = filmsMap[rental.film_id];
 
@@ -227,7 +207,7 @@ Deno.serve(async (req) => {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   } catch (error) {
     console.error("My rentals API error:", error);
@@ -239,7 +219,7 @@ Deno.serve(async (req) => {
       {
         status: 500,
         headers: { "Access-Control-Allow-Origin": "*" },
-      },
+      }
     );
   }
 });
