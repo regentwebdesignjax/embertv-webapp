@@ -142,8 +142,9 @@ Deno.serve(async (req) => {
           slug: film.slug,
           title: film.title,
           short_description: film.short_description,
-          poster_url: film.thumbnail_url,
-          hls_url: film.hls_playback_url,
+          // 🛠️ FIX: Convert empty strings to null so Swift doesn't crash on invalid URLs
+          poster_url: film.thumbnail_url || null,
+          hls_url: film.hls_playback_url || null,
         },
         status: rental.status,
         purchased_at: rental.purchased_at ?? rental.created_date,
