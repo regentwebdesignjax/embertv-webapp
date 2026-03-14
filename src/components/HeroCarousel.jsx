@@ -8,27 +8,6 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 
 const SLIDE_DURATION = 8000;
 
-function extractAutoplayUrl(embedCode) {
-  if (!embedCode) return null;
-  try {
-    const srcMatch = embedCode.match(/src=["']([^"']+)["']/);
-    if (!srcMatch) return null;
-    const url = new URL(srcMatch[1]);
-    url.searchParams.set('autoplay', '1');
-    url.searchParams.set('mute', '1');
-    url.searchParams.set('loop', '1');
-    url.searchParams.set('controls', '0');
-    url.searchParams.set('showinfo', '0');
-    url.searchParams.set('rel', '0');
-    url.searchParams.set('playsinline', '1');
-    const videoId = url.pathname.split('/').pop();
-    if (videoId) url.searchParams.set('playlist', videoId);
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
 export default function HeroCarousel({ featuredFilms }) {
   const [api, setApi] = React.useState(null);
   const [current, setCurrent] = React.useState(0);
