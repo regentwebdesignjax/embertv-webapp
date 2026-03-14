@@ -43,7 +43,9 @@ export default function Browse() {
     initialData: [],
   });
 
-  const featuredFilms = films.filter(f => f.is_featured);
+  const featuredFilms = films
+    .filter(f => f.is_featured)
+    .sort((a, b) => (a.featured_order ?? 999) - (b.featured_order ?? 999));
   const newReleases = films.filter(f => f.is_new_release);
   const trendingFilms = films.filter(f => f.is_trending);
   const leavingSoon = films.filter(f => f.is_leaving_soon);
