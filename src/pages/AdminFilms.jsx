@@ -292,14 +292,14 @@ export default function AdminFilms() {
 
       {/* Reorder Featured Modal */}
       <Dialog open={isReorderModalOpen} onOpenChange={setIsReorderModalOpen}>
-        <DialogContent className="bg-[#1A1A1A] border-[#333333] text-white max-w-md">
+        <DialogContent className="bg-[#1A1A1A] border-[#333333] text-white max-w-md !translate-x-0 !translate-y-0 !top-0 !bottom-0 !left-0 !right-0 !m-auto h-fit max-h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Reorder Featured Films</DialogTitle>
             <DialogDescription className="text-gray-400">
               Drag and drop to set the hero carousel order.
             </DialogDescription>
           </DialogHeader>
-          <div className="py-2 max-h-[60vh] overflow-y-auto">
+          <div className="py-2 overflow-y-auto flex-1">
             {reorderList.length === 0 ? (
               <p className="text-gray-500 text-sm text-center py-6">No featured films found.</p>
             ) : (
