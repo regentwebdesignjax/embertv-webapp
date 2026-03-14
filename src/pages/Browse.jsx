@@ -27,6 +27,13 @@ export default function Browse() {
     checkAuth();
   }, [location]);
 
+  const { data: userRentals } = useQuery({
+    queryKey: ['user-rentals', user?.id],
+    queryFn: () => base44.entities.FilmRental.filter({ user_id: user.id, status: 'active' }),
+    enabled: !!user,
+    initialData: [],
+  });
+
   const { data: films, isLoading: filmsLoading } = useQuery({
     queryKey: ['published-films'],
     queryFn: async () => {
