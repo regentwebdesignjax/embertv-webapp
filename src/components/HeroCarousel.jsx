@@ -69,7 +69,7 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 w-full px-4 md:px-12 lg:px-16">
           <h1 className="text-5xl md:text-7xl font-bold mb-3 leading-tight">
             {displayName ? (
               <>Welcome, <span className="text-[#EF6418]">{displayName}</span></>
@@ -107,7 +107,7 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30" />
 
                   {/* Content */}
-                  <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+                  <div className="relative z-10 w-full px-4 md:px-12 lg:px-16 pb-24">
                     <div className="max-w-2xl">
                       <motion.h1
                         key={film.id}
