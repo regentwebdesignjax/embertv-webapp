@@ -147,12 +147,18 @@ export default function AdminFilms() {
               <h1 className="text-4xl font-bold mb-2">Film Management</h1>
               <p className="text-gray-400">{films.length} total films</p>
             </div>
-            <Link to={createPageUrl("AdminFilmForm")}>
-              <Button className="btn-primary">
-                <Plus className="w-4 h-4 mr-2" />
-                Add New Film
+            <div className="flex gap-3">
+              <Button onClick={openReorderModal} className="btn-secondary">
+                <ListOrdered className="w-4 h-4 mr-2" />
+                Reorder Featured
               </Button>
-            </Link>
+              <Link to={createPageUrl("AdminFilmForm")}>
+                <Button className="btn-primary">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add New Film
+                </Button>
+              </Link>
+            </div>
           </div>
         </motion.div>
 
