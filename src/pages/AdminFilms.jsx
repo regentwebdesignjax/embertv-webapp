@@ -66,6 +66,7 @@ export default function AdminFilms() {
       Promise.all(orderedFilms.map((film, index) => base44.entities.Film.update(film.id, { featured_order: index }))),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-films'] });
+      queryClient.invalidateQueries({ queryKey: ['published-films'] });
       setIsReorderModalOpen(false);
       toast({ title: "Order saved", description: "Featured film order has been updated." });
     },
