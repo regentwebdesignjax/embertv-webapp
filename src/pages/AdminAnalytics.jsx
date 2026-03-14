@@ -118,18 +118,11 @@ export default function AdminAnalytics() {
       const response = await base44.functions.invoke('syncStripeRentals', {});
       
       if (response.data.success) {
-        toast({
-          title: "Sync Complete",
-          description: `${response.data.synced} rentals updated, ${response.data.skipped} skipped`,
-        });
+        toast.success(`Sync Complete: ${response.data.synced} rentals updated, ${response.data.skipped} skipped`);
         queryClient.invalidateQueries({ queryKey: ['analytics-rentals'] });
       }
     } catch (error) {
-      toast({
-        title: "Sync Failed",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast.error(`Sync Failed: ${error.message}`);
     } finally {
       setSyncing(false);
     }

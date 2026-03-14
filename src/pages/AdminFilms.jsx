@@ -68,7 +68,7 @@ export default function AdminFilms() {
       queryClient.invalidateQueries({ queryKey: ['admin-films'] });
       queryClient.invalidateQueries({ queryKey: ['published-films'] });
       setIsReorderModalOpen(false);
-      toast({ title: "Order saved", description: "Featured film order has been updated." });
+      toast.success("Featured order saved successfully");
     },
   });
 
