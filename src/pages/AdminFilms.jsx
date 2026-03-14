@@ -31,8 +31,11 @@ export default function AdminFilms() {
   const [loading, setLoading] = React.useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [filmToDelete, setFilmToDelete] = React.useState(null);
-  
+  const [isReorderModalOpen, setIsReorderModalOpen] = React.useState(false);
+  const [reorderList, setReorderList] = React.useState([]);
+
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   React.useEffect(() => {
     checkAuth();
