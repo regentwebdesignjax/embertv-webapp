@@ -8,7 +8,7 @@ import GenrePills from "../components/browse/GenrePills";
 import PromoBanner from "../components/browse/PromoBanner";
 
 export default function Browse() {
-  const [genreFilter, setGenreFilter] = React.useState("all");
+  const [genreFilter, setGenreFilter] = useState("all");
   const location = useLocation();
 
   const { data: films, isLoading } = useQuery({
