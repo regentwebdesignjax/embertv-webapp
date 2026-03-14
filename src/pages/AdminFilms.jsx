@@ -289,6 +289,61 @@ export default function AdminFilms() {
         </motion.div>
       </div>
 
+      {/* Reorder Featured Modal */}
+      <Dialog open={isReorderModalOpen} onOpenChange={setIsReorderModalOpen}>
+        <DialogContent className="bg-[#1A1A1A] border-[#333333] text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reorder Featured Films</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Drag and drop to set the hero carousel order.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-2 max-h-[60vh] overflow-y-auto">
+            {reorderList.length === 0 ? (
+              <p className="text-gray-500 text-sm text-center py-6">No featured films found.</p>
+            ) : (
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="featured-films">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {reorderList.map((film, index) => (
+                        <Draggable key={film.id} draggableId={film.id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`bg-[#0A0A0A] border border-[#333333] p-3 rounded-md flex items-center gap-3 mb-2 transition-shadow ${snapshot.isDragging ? 'shadow-lg shadow-[#EF6418]/20 border-[#EF6418]/40' : ''}`}
+                            >
+                              <GripVertical className="w-4 h-4 text-gray-500 cursor-grab flex-none" />
+                              {film.thumbnail_url && (
+                                <img src={film.thumbnail_url} alt={film.title} className="w-10 h-14 object-cover rounded flex-none" />
+                              )}
+                              <span className="font-medium text-white text-sm">{film.title}</span>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            )}
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setIsReorderModalOpen(false)} className="btn-secondary">Cancel</Button>
+            <Button
+              onClick={() => saveFeaturedOrderMutation.mutate(reorderList)}
+              disabled={saveFeaturedOrderMutation.isPending}
+              className="btn-primary"
+            >
+              {saveFeaturedOrderMutation.isPending ? 'Saving...' : 'Save Order'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent className="bg-[#1A1A1A] border-[#333333] text-white">
