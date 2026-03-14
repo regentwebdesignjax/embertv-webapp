@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, TrendingUp, Calendar, Film as FilmIcon, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "react-hot-toast";
 import {
   Table,
   TableBody,
