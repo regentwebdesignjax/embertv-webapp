@@ -96,7 +96,7 @@ export default function Browse() {
       </div>
 
       {/* Content Rows */}
-      <div className="w-full px-4 md:px-8 lg:px-12 mt-8">
+      <div className="w-full mt-8">
         {filmsLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#EF6418]"></div>
@@ -107,10 +107,10 @@ export default function Browse() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="py-6"
+            className="py-6 px-4 md:px-12 lg:px-16"
           >
             <h2 className="text-2xl md:text-3xl font-bold mb-6">{genreFilter}</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
               {filteredFilms.map((film, index) => (
                 <FilmCard key={film.id} film={film} index={index} />
               ))}
@@ -125,10 +125,10 @@ export default function Browse() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-2xl md:text-3xl font-bold mb-6">New Releases</h2>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6 px-4 md:px-12 lg:px-16">New Releases</h2>
+                <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory w-full px-4 md:px-12 lg:px-16">
                   {newReleases.map((film, index) => (
-                    <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
+                    <div key={film.id} className="flex-none w-[38%] sm:w-[28%] md:w-[20%] lg:w-[15%] xl:w-[13.5%] snap-start">
                       <FilmCard film={film} index={index} />
                     </div>
                   ))}
@@ -143,10 +143,10 @@ export default function Browse() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <h2 className="text-2xl md:text-3xl font-bold mb-6">Trending Now</h2>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6 px-4 md:px-12 lg:px-16">Trending Now</h2>
+                <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory w-full px-4 md:px-12 lg:px-16">
                   {trendingFilms.map((film, index) => (
-                    <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
+                    <div key={film.id} className="flex-none w-[38%] sm:w-[28%] md:w-[20%] lg:w-[15%] xl:w-[13.5%] snap-start">
                       <FilmCard film={film} index={index} />
                     </div>
                   ))}
@@ -161,10 +161,10 @@ export default function Browse() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <h2 className="text-2xl md:text-3xl font-bold mb-6">Leaving Soon</h2>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6 px-4 md:px-12 lg:px-16">Leaving Soon</h2>
+                <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory w-full px-4 md:px-12 lg:px-16">
                   {leavingSoon.map((film, index) => (
-                    <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
+                    <div key={film.id} className="flex-none w-[38%] sm:w-[28%] md:w-[20%] lg:w-[15%] xl:w-[13.5%] snap-start">
                       <FilmCard film={film} index={index} />
                     </div>
                   ))}
@@ -180,10 +180,10 @@ export default function Browse() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: sectionIndex * 0.08 }}
               >
-                <h2 className="text-2xl md:text-3xl font-bold mb-6">{genre}</h2>
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6 px-4 md:px-12 lg:px-16">{genre}</h2>
+                <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory w-full px-4 md:px-12 lg:px-16">
                   {filmsByGenre[genre].map((film, index) => (
-                    <div key={film.id} className="flex-none w-[45%] sm:w-[30%] md:w-[23%] lg:w-[18.5%] snap-start">
+                    <div key={film.id} className="flex-none w-[38%] sm:w-[28%] md:w-[20%] lg:w-[15%] xl:w-[13.5%] snap-start">
                       <FilmCard film={film} index={index} />
                     </div>
                   ))}
