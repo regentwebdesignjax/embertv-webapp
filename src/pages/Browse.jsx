@@ -72,7 +72,7 @@ export default function Browse() {
   return (
     <div className="min-h-screen bg-[#000000] pb-20">
       {/* Cinematic Hero Carousel */}
-      <HeroCarousel featuredFilms={featuredFilms} />
+      <HeroCarousel featuredFilms={featuredFilms} userRentals={userRentals} user={user} />
 
       {/* Pill Genre Navigation */}
       <div className="sticky top-16 sm:top-20 z-30 bg-gradient-to-b from-black to-transparent pt-4 pb-4">
