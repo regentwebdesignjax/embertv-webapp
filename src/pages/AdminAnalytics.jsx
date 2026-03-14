@@ -21,7 +21,6 @@ export default function AdminAnalytics() {
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [syncing, setSyncing] = React.useState(false);
-  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
