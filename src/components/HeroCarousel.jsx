@@ -58,6 +58,7 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
   }, [api, current, progressKey, featuredFilms.length]);
 
   if (featuredFilms.length === 0) {
+    const displayName = user?.display_name || user?.full_name || null;
     return (
       <section className="relative h-[55vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
@@ -69,8 +70,14 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-7xl font-bold mb-3 leading-tight">Discover</h1>
-          <p className="text-xl text-gray-300">Faith-focused films for every season</p>
+          <h1 className="text-5xl md:text-7xl font-bold mb-3 leading-tight">
+            {displayName ? (
+              <>Welcome, <span className="text-[#EF6418]">{displayName}</span></>
+            ) : (
+              'Welcome'
+            )}
+          </h1>
+          <p className="text-xl text-gray-300">Rent any film for 48-hour unlimited access</p>
         </div>
       </section>
     );
