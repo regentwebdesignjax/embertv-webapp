@@ -1,14 +1,40 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
-import { Play, Info } from "lucide-react";
+import { Play, Info, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { base44 } from "@/api/base44Client";
 
 const SLIDE_DURATION = 8000;
 
-export default function HeroCarousel({ featuredFilms }) {
+export default function HeroCarousel({ featuredFilms, userRentals = [], user }) {
+  const navigate = useNavigate();
+  const [loadingFilmId, setLoadingFilmId] = React.useState(null);
+
+  const hasActiveRental = (filmId) => {
+    const now = new Date();
+    return userRentals.some(r => r.film_id === filmId && new Date(r.expires_at) > now);
+  };
+
+  const handleRentNow = async (film) => {
+    if (!user) {
+      base44.auth.redirectToLogin(window.location.href);
+      return;
+    }
+    setLoadingFilmId(film.id);
+    try {
+      const response = await base44.functions.invoke('createRentalCheckout', { film_id: film.id });
+      if (response.data?.checkout_url) {
+        window.location.href = response.data.checkout_url;
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+    } finally {
+      setLoadingFilmId(null);
+    }
+  };
   const [api, setApi] = React.useState(null);
   const [current, setCurrent] = React.useState(0);
   const [progressKey, setProgressKey] = React.useState(0);
