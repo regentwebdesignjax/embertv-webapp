@@ -144,12 +144,23 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
                         transition={{ duration: 0.5, delay: 0.35 }}
                         className="flex items-center gap-3"
                       >
-                        <Link to={createPageUrl(`FilmDetail?slug=${film.slug}`)}>
-                          <Button className="btn-primary gap-2 px-6 h-11">
-                            <Play className="w-4 h-4 fill-white" />
-                            Watch Now
+                        {hasActiveRental(film.id) ? (
+                          <Link to={createPageUrl(`FilmDetail?slug=${film.slug}`)}>
+                            <Button className="btn-primary gap-2 px-6 h-11">
+                              <Play className="w-4 h-4 fill-white" />
+                              Watch Now
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button
+                            className="btn-primary gap-2 px-6 h-11"
+                            onClick={() => handleRentNow(film)}
+                            disabled={loadingFilmId === film.id}
+                          >
+                            <ShoppingCart className="w-4 h-4" />
+                            {loadingFilmId === film.id ? 'Loading...' : 'Rent Now'}
                           </Button>
-                        </Link>
+                        )}
                         <Link to={createPageUrl(`FilmDetail?slug=${film.slug}`)}>
                           <Button className="btn-secondary gap-2 px-6 h-11">
                             <Info className="w-4 h-4" />
