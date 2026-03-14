@@ -139,12 +139,13 @@ export default function AdminDashboard() {
 
           <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-gradient-to-br from-[#EF6418]/10 to-[#D55514]/10 border-[#EF6418]/20 hover:border-[#EF6418]/40 transition-colors cursor-pointer group">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
+            <Card className="bg-[#1A1A1A] border-[#333333] transition-all duration-300 group cursor-pointer hover:border-[#EF6418]/50 hover:shadow-lg hover:shadow-[#EF6418]/10 hover:-translate-y-1">
               <Link to={createPageUrl("AdminFilms")}>
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-[#EF6418] transition-colors">
-                    <div className="w-12 h-12 bg-[#EF6418]/20 rounded-lg flex items-center justify-center group-hover:bg-[#EF6418]/30 transition-colors">
-                      <Film className="w-6 h-6 text-[#EF6418]" />
+                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-[#EF6418] transition-colors duration-300">
+                    <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center transition-colors duration-300 group-hover:bg-[#EF6418]/20">
+                      <Film className="w-6 h-6 text-gray-400 group-hover:text-[#EF6418] transition-colors duration-300" />
                     </div>
                     Manage Films
                   </CardTitle>
@@ -154,13 +155,15 @@ export default function AdminDashboard() {
                 </CardHeader>
               </Link>
             </Card>
+            </motion.div>
 
-            <Card className="bg-gradient-to-br from-purple-500/10 to-purple-700/10 border-purple-500/20 hover:border-purple-500/40 transition-colors cursor-pointer group">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+            <Card className="bg-[#1A1A1A] border-[#333333] transition-all duration-300 group cursor-pointer hover:border-[#EF6418]/50 hover:shadow-lg hover:shadow-[#EF6418]/10 hover:-translate-y-1">
               <Link to={createPageUrl("AdminUsers")}>
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-purple-400 transition-colors">
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
-                      <Users className="w-6 h-6 text-purple-400" />
+                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-[#EF6418] transition-colors duration-300">
+                    <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center transition-colors duration-300 group-hover:bg-[#EF6418]/20">
+                      <Users className="w-6 h-6 text-gray-400 group-hover:text-[#EF6418] transition-colors duration-300" />
                     </div>
                     View Users
                   </CardTitle>
@@ -170,13 +173,15 @@ export default function AdminDashboard() {
                 </CardHeader>
               </Link>
             </Card>
+            </motion.div>
 
-            <Card className="bg-gradient-to-br from-green-500/10 to-green-700/10 border-green-500/20 hover:border-green-500/40 transition-colors cursor-pointer group">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
+            <Card className="bg-[#1A1A1A] border-[#333333] transition-all duration-300 group cursor-pointer hover:border-[#EF6418]/50 hover:shadow-lg hover:shadow-[#EF6418]/10 hover:-translate-y-1">
               <Link to={createPageUrl("AdminAnalytics")}>
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-green-400 transition-colors">
-                    <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
-                      <TrendingUp className="w-6 h-6 text-green-400" />
+                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-[#EF6418] transition-colors duration-300">
+                    <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center transition-colors duration-300 group-hover:bg-[#EF6418]/20">
+                      <TrendingUp className="w-6 h-6 text-gray-400 group-hover:text-[#EF6418] transition-colors duration-300" />
                     </div>
                     View Analytics
                   </CardTitle>
@@ -186,13 +191,15 @@ export default function AdminDashboard() {
                 </CardHeader>
               </Link>
             </Card>
+            </motion.div>
 
-            <Card className="bg-gradient-to-br from-blue-500/10 to-blue-700/10 border-blue-500/20 hover:border-blue-500/40 transition-colors cursor-pointer group">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
+            <Card className="bg-[#1A1A1A] border-[#333333] transition-all duration-300 group cursor-pointer hover:border-[#EF6418]/50 hover:shadow-lg hover:shadow-[#EF6418]/10 hover:-translate-y-1">
               <Link to={createPageUrl("AdminReviews")}>
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-blue-400 transition-colors">
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
-                      <MessageSquare className="w-6 h-6 text-blue-400" />
+                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-[#EF6418] transition-colors duration-300">
+                    <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center transition-colors duration-300 group-hover:bg-[#EF6418]/20">
+                      <MessageSquare className="w-6 h-6 text-gray-400 group-hover:text-[#EF6418] transition-colors duration-300" />
                     </div>
                     Manage Reviews
                   </CardTitle>
@@ -202,13 +209,15 @@ export default function AdminDashboard() {
                 </CardHeader>
               </Link>
             </Card>
+            </motion.div>
 
-            <Card className="bg-gradient-to-br from-yellow-500/10 to-yellow-700/10 border-yellow-500/20 hover:border-yellow-500/40 transition-colors cursor-pointer group">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}>
+            <Card className="bg-[#1A1A1A] border-[#333333] transition-all duration-300 group cursor-pointer hover:border-[#EF6418]/50 hover:shadow-lg hover:shadow-[#EF6418]/10 hover:-translate-y-1">
               <Link to={createPageUrl("AdminRentals")}>
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-yellow-400 transition-colors">
-                    <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center group-hover:bg-yellow-500/30 transition-colors">
-                      <Film className="w-6 h-6 text-yellow-400" />
+                  <CardTitle className="text-white flex items-center gap-3 group-hover:text-[#EF6418] transition-colors duration-300">
+                    <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center transition-colors duration-300 group-hover:bg-[#EF6418]/20">
+                      <Film className="w-6 h-6 text-gray-400 group-hover:text-[#EF6418] transition-colors duration-300" />
                     </div>
                     Manage Rentals
                   </CardTitle>
@@ -218,6 +227,7 @@ export default function AdminDashboard() {
                 </CardHeader>
               </Link>
             </Card>
+            </motion.div>
             </div>
             </motion.div>
 
