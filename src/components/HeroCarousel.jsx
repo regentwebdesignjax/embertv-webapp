@@ -62,17 +62,7 @@ export default function HeroCarousel({ featuredFilms }) {
               <CarouselItem key={film.id}>
                 <div className="relative h-[82vh] flex items-end overflow-hidden">
                   {/* Background */}
-                  {autoplayUrl ? (
-                    <div className="absolute inset-0 overflow-hidden bg-black">
-                      <iframe
-                        src={autoplayUrl}
-                        className="absolute w-[300%] h-[300%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none border-0"
-                        allow="autoplay; encrypted-media"
-                        frameBorder="0"
-                        title={film.title}
-                      />
-                    </div>
-                  ) : bgImage ? (
+                  {bgImage ? (
                     <div className="absolute inset-0">
                       <img src={bgImage} alt={film.title} className="w-full h-full object-cover" />
                     </div>
