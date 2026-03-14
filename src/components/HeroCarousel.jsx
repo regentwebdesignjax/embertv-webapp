@@ -55,7 +55,6 @@ export default function HeroCarousel({ featuredFilms }) {
       <Carousel setApi={setApi} opts={{ loop: true }}>
         <CarouselContent>
           {featuredFilms.map((film) => {
-            const autoplayUrl = extractAutoplayUrl(film.trailer_embed_code);
             const bgImage = film.banner_image_url || film.thumbnail_url;
 
             return (
