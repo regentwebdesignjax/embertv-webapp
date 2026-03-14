@@ -4,7 +4,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowLeft, Plus, Pencil, Trash2, Eye } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Eye, Sparkles, Flame, TrendingUp, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -54,6 +54,11 @@ export default function AdminFilms() {
     queryKey: ['admin-films'],
     queryFn: () => base44.entities.Film.list('-created_date'),
     initialData: [],
+  });
+
+  const togglePlacementMutation = useMutation({
+    mutationFn: ({ id, field, newValue }) => base44.entities.Film.update(id, { [field]: newValue }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-films'] }),
   });
 
   const deleteFilmMutation = useMutation({
@@ -147,6 +152,7 @@ export default function AdminFilms() {
                   <TableRow className="border-[#333333] hover:bg-transparent">
                     <TableHead className="text-gray-400">Title</TableHead>
                     <TableHead className="text-gray-400">Status</TableHead>
+                    <TableHead className="text-gray-400">Placements</TableHead>
                     <TableHead className="text-gray-400">Rental Price</TableHead>
                     <TableHead className="text-gray-400">Stripe Product</TableHead>
                     <TableHead className="text-gray-400 text-right">Actions</TableHead>
@@ -156,28 +162,44 @@ export default function AdminFilms() {
                   {films.map((film) => (
                     <TableRow key={film.id} className="border-[#333333] hover:bg-white/5">
                       <TableCell className="font-medium text-white">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            {film.title}
-                            {film.is_featured && (
-                              <Badge className="bg-[#EF6418]/20 text-[#EF6418] border-[#EF6418]/30 text-xs">
-                                Featured
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">{film.slug}</div>
-                        </div>
+                       <div>
+                         <div>{film.title}</div>
+                         <div className="text-xs text-gray-500 mt-1">{film.slug}</div>
+                       </div>
                       </TableCell>
                       <TableCell>
-                        {film.is_published ? (
-                          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                            Published
-                          </Badge>
-                        ) : (
-                          <Badge className="bg-gray-500/20 text-gray-400 border-gray-500/30">
-                            Draft
-                          </Badge>
-                        )}
+                       {film.is_published ? (
+                         <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                           Published
+                         </Badge>
+                       ) : (
+                         <Badge className="bg-gray-500/20 text-gray-400 border-gray-500/30">
+                           Draft
+                         </Badge>
+                       )}
+                      </TableCell>
+                      <TableCell>
+                       <div className="flex gap-1">
+                         {[
+                           { field: 'is_featured', icon: Sparkles, label: 'Featured' },
+                           { field: 'is_new_release', icon: Flame, label: 'New Release' },
+                           { field: 'is_trending', icon: TrendingUp, label: 'Trending' },
+                           { field: 'is_leaving_soon', icon: Clock, label: 'Leaving Soon' },
+                         ].map(({ field, icon: Icon, label }) => (
+                           <button
+                             key={field}
+                             title={`Toggle ${label}`}
+                             onClick={() => togglePlacementMutation.mutate({ id: film.id, field, newValue: !film[field] })}
+                             className={`p-1.5 rounded border transition-colors duration-200 ${
+                               film[field]
+                                 ? 'bg-[#EF6418]/20 text-[#EF6418] border-[#EF6418]/50'
+                                 : 'text-gray-500 border-[#333333] hover:text-white hover:border-gray-500'
+                             }`}
+                           >
+                             <Icon className="w-3.5 h-3.5" />
+                           </button>
+                         ))}
+                       </div>
                       </TableCell>
                       <TableCell className="text-gray-400">
                         {formatPrice(film)}
