@@ -61,6 +61,32 @@ export default function AdminFilms() {
     initialData: [],
   });
 
+  const saveFeaturedOrderMutation = useMutation({
+    mutationFn: (orderedFilms) =>
+      Promise.all(orderedFilms.map((film, index) => base44.entities.Film.update(film.id, { featured_order: index }))),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-films'] });
+      setIsReorderModalOpen(false);
+      toast({ title: "Order saved", description: "Featured film order has been updated." });
+    },
+  });
+
+  const openReorderModal = () => {
+    const featured = [...films]
+      .filter(f => f.is_featured)
+      .sort((a, b) => (a.featured_order ?? 999) - (b.featured_order ?? 999));
+    setReorderList(featured);
+    setIsReorderModalOpen(true);
+  };
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(reorderList);
+    const [moved] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, moved);
+    setReorderList(items);
+  };
+
   const togglePlacementMutation = useMutation({
     mutationFn: ({ id, field, newValue }) => base44.entities.Film.update(id, { [field]: newValue }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-films'] }),
