@@ -105,13 +105,14 @@ export default function AdminUsers() {
   const bulkAwardRentalMutation = useMutation({
     mutationFn: async (filmId) => {
       const now = new Date();
-      const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      const expiresAt = new Date(now.getTime() + 48 * 60 * 60 * 1000);
       await Promise.all(selectedUserIds.map(userId =>
         base44.entities.FilmRental.create({
           user_id: userId,
           film_id: filmId,
           status: "active",
           amount_cents: 0,
+          currency: "usd",
           purchased_at: now.toISOString(),
           expires_at: expiresAt.toISOString(),
         })
@@ -348,16 +349,16 @@ export default function AdminUsers() {
           <DialogHeader>
             <DialogTitle>Award Free Rental</DialogTitle>
             <DialogDescription className="text-gray-400">
-              Select a film to award as a free 24-hour rental to {selectedUserIds.length} selected user(s).
+              Select a film to award as a free 48-hour rental to {selectedUserIds.length} selected user(s).
             </DialogDescription>
           </DialogHeader>
           <Select value={selectedFilmId} onValueChange={setSelectedFilmId}>
             <SelectTrigger className="bg-[#0A0A0A] border-[#333333] text-white">
               <SelectValue placeholder="Select a film..." />
             </SelectTrigger>
-            <SelectContent className="bg-[#1A1A1A] border-[#333333]">
+            <SelectContent className="bg-[#1A1A1A] border-[#333333] text-white">
               {films.map(film => (
-                <SelectItem key={film.id} value={film.id} className="text-white focus:bg-white/10">
+                <SelectItem key={film.id} value={film.id} className="text-white focus:bg-white/10 focus:text-white">
                   {film.title}
                 </SelectItem>
               ))}
