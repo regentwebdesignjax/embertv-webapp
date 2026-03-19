@@ -3,6 +3,17 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import FilmCard from "../components/FilmCard";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const FilmCardSkeleton = () => (
+  <div className="flex-none w-[38%] sm:w-[28%] md:w-[20%] lg:w-[15%] xl:w-[13.5%] space-y-3">
+    <Skeleton className="w-full aspect-[2/3] rounded-lg bg-white/5" />
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-3/4 bg-white/5" />
+      <Skeleton className="h-3 w-1/2 bg-white/5" />
+    </div>
+  </div>
+);
 import HeroCarousel from "../components/HeroCarousel";
 import { useLocation } from "react-router-dom";
 
