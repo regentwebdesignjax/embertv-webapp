@@ -195,8 +195,8 @@ export default function FilmDetail() {
             alt={film.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-black/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-black/20 to-transparent h-full" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent md:w-2/3" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 w-full">
@@ -204,7 +204,7 @@ export default function FilmDetail() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl"
+            className="max-w-3xl drop-shadow-lg"
           >
             <Link to={createPageUrl("Browse")}>
               <Button
