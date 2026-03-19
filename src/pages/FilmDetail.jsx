@@ -343,12 +343,15 @@ export default function FilmDetail() {
                         </div>
                         <Button
                           onClick={handleRentClick}
-                          disabled={rentingInProgress}
+                          disabled={isCheckoutLoading || rentingInProgress}
                           size="lg"
                           className="btn-primary font-bold px-12 py-6 text-lg"
                         >
-                          {rentingInProgress ? (
-                            <>Processing...</>
+                          {isCheckoutLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                              Connecting securely...
+                            </>
                           ) : (
                             <>
                               <Play className="w-5 h-5 mr-2" />
