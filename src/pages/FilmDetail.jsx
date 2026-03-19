@@ -187,15 +187,6 @@ export default function FilmDetail() {
 
   return (
     <div className="min-h-screen bg-[#000000]">
-      {/* Frost Background */}
-      <div className="fixed inset-0 z-[-1] overflow-hidden">
-        <img
-          src={bannerUrl}
-          alt=""
-          className="w-full h-full object-cover filter blur-[80px] brightness-[0.3] scale-110"
-        />
-      </div>
-
       {/* Hero Banner */}
       <section className="relative h-[70vh] sm:h-[80vh] flex items-end overflow-hidden">
         <div className="absolute inset-0 z-0">
