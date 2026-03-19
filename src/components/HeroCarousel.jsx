@@ -12,6 +12,7 @@ const SLIDE_DURATION = 8000;
 export default function HeroCarousel({ featuredFilms, userRentals = [], user }) {
   const navigate = useNavigate();
   const [loadingFilmId, setLoadingFilmId] = React.useState(null);
+  const [checkoutLoadingId, setCheckoutLoadingId] = React.useState(null);
 
   const hasActiveRental = (filmId) => {
     const now = new Date();
