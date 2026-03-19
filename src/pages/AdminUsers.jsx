@@ -197,15 +197,14 @@ export default function AdminUsers() {
           {selectedUserIds.length > 0 && (
             <div className="flex items-center gap-3 px-4 py-3 border-b border-[#333333] bg-[#1F1F1F]">
               <span className="text-sm text-gray-400">{selectedUserIds.length} selected</span>
-              <Button variant="outline" size="sm" onClick={handleExportCSV}
-                className="border-[#444] text-white hover:bg-white/10">
+              <Button size="sm" onClick={handleExportCSV} className="btn-secondary">
                 <Download className="w-4 h-4 mr-2" />Export CSV
               </Button>
-              <Button variant="outline" size="sm" onClick={() => setBulkAwardDialogOpen(true)}
-                className="border-[#444] text-white hover:bg-white/10">
+              <Button size="sm" onClick={() => setBulkAwardDialogOpen(true)} className="btn-primary">
                 <Gift className="w-4 h-4 mr-2" />Award Free Rental
               </Button>
-              <Button variant="destructive" size="sm" onClick={() => setBulkDeleteDialogOpen(true)}>
+              <Button size="sm" onClick={() => setBulkDeleteDialogOpen(true)}
+                className="bg-red-600 hover:bg-red-700 text-white font-semibold">
                 <Trash2 className="w-4 h-4 mr-2" />Delete Selected
               </Button>
             </div>
