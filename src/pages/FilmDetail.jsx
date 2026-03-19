@@ -199,53 +199,39 @@ export default function FilmDetail() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent md:w-2/3" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 w-full">
+        <div className="relative z-10 w-full px-4 md:px-12 lg:px-16 pt-32 md:pt-48 pb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl drop-shadow-lg"
+            className="max-w-3xl drop-shadow-lg space-y-6 md:space-y-8"
           >
             <Link to={createPageUrl("Browse")}>
               <Button
                 variant="ghost"
-                className="mb-6 text-white hover:bg-white/10 hover:text-white -ml-4 transition-colors"
+                className="text-white hover:bg-white/10 hover:text-white -ml-4 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Browse
               </Button>
             </Link>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+            <h1 className="text-5xl md:text-7xl lg:text-[80px] font-black tracking-tighter leading-none text-white drop-shadow-2xl">
               {film.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6">
+            <div className="text-base md:text-lg lg:text-xl font-medium text-white/80 tracking-wide flex flex-wrap items-center gap-3">
               {film.rating && (
                 <Badge className="bg-[#EF6418] hover:bg-[#D55514] text-white border-0 text-sm px-3 py-1">
                   {film.rating}
                 </Badge>
               )}
-              {film.release_year && (
-                <div className="flex items-center gap-2 text-gray-300">
-                  <Calendar className="w-4 h-4" />
-                  <span>{film.release_year}</span>
-                </div>
-              )}
-              {film.duration_minutes && (
-                <div className="flex items-center gap-2 text-gray-300">
-                  <Clock className="w-4 h-4" />
-                  <span>{film.duration_minutes} min</span>
-                </div>
-              )}
-              {film.genre && (
-                <Badge variant="outline" className="border-white/30 text-white">
-                  {film.genre}
-                </Badge>
-              )}
+              {film.release_year && <span>{film.release_year}</span>}
+              {film.duration_minutes && <><span className="text-white/30">·</span><span>{film.duration_minutes} min</span></>}
+              {film.genre && <><span className="text-white/30">·</span><span>{film.genre}</span></>}
             </div>
 
-            <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+            <p className="text-lg text-gray-300 leading-relaxed">
               {film.short_description}
             </p>
 

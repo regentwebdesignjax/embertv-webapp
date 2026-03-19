@@ -88,7 +88,7 @@ export default function MyRentals() {
   }
 
   return (
-    <div className="min-h-screen bg-[#000000] py-12 w-full px-4 md:px-8 lg:px-12">
+    <div className="min-h-screen bg-[#000000] pt-12 md:pt-16 pb-20 w-full px-4 md:px-8 lg:px-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -126,7 +126,7 @@ export default function MyRentals() {
         </div>
       ) : (
         <Tabs defaultValue="active">
-          <TabsList className="bg-transparent border-b border-[#333333] rounded-none w-full justify-start h-auto p-0 mb-8">
+          <TabsList className="bg-transparent border-b border-[#333333] rounded-none w-full justify-start h-auto p-0 mb-8 md:mb-12">
             <TabsTrigger
               value="active"
               className="rounded-none border-b-2 border-transparent data-[state=active]:border-[#EF6418] data-[state=active]:bg-transparent data-[state=active]:text-white text-gray-400 pb-3 px-5 text-sm font-medium"
@@ -165,7 +165,7 @@ export default function MyRentals() {
                 </CardContent>
               </Card>
             ) : viewMode === 'card' ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-6 md:gap-8">
                 {activeRentals.map((rental, index) => (
                   <RentalCard key={rental.id} rental={rental} film={getFilmForRental(rental)} index={index} isExpired={false} />
                 ))}
@@ -181,7 +181,7 @@ export default function MyRentals() {
                 <p className="text-gray-400 text-lg">No past rentals</p>
               </div>
             ) : viewMode === 'card' ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-6 md:gap-8">
                 {expiredRentals.map((rental, index) => (
                   <RentalCard key={rental.id} rental={rental} film={getFilmForRental(rental)} index={index} isExpired={true} />
                 ))}
