@@ -165,10 +165,19 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
                           <Button
                             className="btn-primary gap-2 px-6 h-11"
                             onClick={() => handleRentNow(film)}
-                            disabled={loadingFilmId === film.id}
+                            disabled={checkoutLoadingId === film.id || loadingFilmId === film.id}
                           >
-                            <ShoppingCart className="w-4 h-4" />
-                            {loadingFilmId === film.id ? 'Loading...' : 'Rent Now'}
+                            {checkoutLoadingId === film.id ? (
+                              <>
+                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                Connecting...
+                              </>
+                            ) : (
+                              <>
+                                <ShoppingCart className="w-4 h-4" />
+                                Rent Now
+                              </>
+                            )}
                           </Button>
                         )}
                         <Link to={createPageUrl(`FilmDetail?slug=${film.slug}`)}>
