@@ -76,8 +76,20 @@ export default function Browse() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#EF6418]"></div>
+      <div className="min-h-screen bg-[#000000] pb-20">
+        <Skeleton className="w-full h-[50vh] bg-white/5 rounded-none mb-12" />
+        <div className="w-full px-4 md:px-8 lg:px-12 space-y-12">
+          {[1, 2].map((row) => (
+            <div key={row} className="space-y-6">
+              <Skeleton className="h-8 w-48 bg-white/5" />
+              <div className="flex gap-4 overflow-hidden">
+                {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                  <FilmCardSkeleton key={i} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -109,8 +121,13 @@ export default function Browse() {
       {/* Content Rows */}
       <div className="w-full mt-8">
         {filmsLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#EF6418]"></div>
+          <div className="px-4 md:px-8 lg:px-12 space-y-6 mb-12">
+            <Skeleton className="h-8 w-64 bg-white/5" />
+            <div className="flex gap-4 overflow-hidden">
+              {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                <FilmCardSkeleton key={i} />
+              ))}
+            </div>
           </div>
         ) : genreFilter !== "all" ? (
           // Filtered genre grid
