@@ -124,6 +124,7 @@ export default function FilmDetail() {
       return;
     }
 
+    setIsCheckoutLoading(true);
     setRentingInProgress(true);
     setErrorMessage(null);
 
@@ -137,12 +138,14 @@ export default function FilmDetail() {
       } else {
         setErrorMessage(response.data.error || 'Failed to create checkout session');
         setRentingInProgress(false);
+        setIsCheckoutLoading(false);
       }
     } catch (error) {
       console.error('Error creating rental:', error);
       const errorMsg = error.response?.data?.error || error.message || 'Failed to start rental process. Please try again.';
       setErrorMessage(errorMsg);
       setRentingInProgress(false);
+      setIsCheckoutLoading(false);
     }
   };
 
