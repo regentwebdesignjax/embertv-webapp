@@ -4,7 +4,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowLeft, Clock, Calendar, Star, Info, LogIn, Play, Sparkles, MessageSquare } from "lucide-react";
+import { ArrowLeft, Clock, Calendar, Star, Info, LogIn, Play, Sparkles, MessageSquare, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
