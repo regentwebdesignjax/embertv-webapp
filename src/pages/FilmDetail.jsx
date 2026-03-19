@@ -226,9 +226,9 @@ export default function FilmDetail() {
 
             <div className="text-base md:text-lg lg:text-xl font-medium text-white/80 tracking-wide flex flex-wrap items-center gap-3">
               {film.rating && (
-                <Badge className="bg-[#EF6418] hover:bg-[#D55514] text-white border-0 text-sm px-3 py-1">
+                <span className="border border-white/40 px-2 py-0.5 rounded-sm text-xs md:text-sm font-bold uppercase tracking-wider text-white/90">
                   {film.rating}
-                </Badge>
+                </span>
               )}
               {film.release_year && <span>{film.release_year}</span>}
               {film.duration_minutes && <><span className="text-white/30">·</span><span>{film.duration_minutes} min</span></>}
