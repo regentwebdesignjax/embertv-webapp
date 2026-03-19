@@ -19,6 +19,7 @@ export default function FilmDetail() {
   const [loading, setLoading] = React.useState(true);
   const [slug, setSlug] = React.useState(null);
   const [rentingInProgress, setRentingInProgress] = React.useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState(null);
   const [showReviewForm, setShowReviewForm] = React.useState(false);
 
