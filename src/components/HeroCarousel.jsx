@@ -24,6 +24,7 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
       base44.auth.redirectToLogin(window.location.href);
       return;
     }
+    setCheckoutLoadingId(film.id);
     setLoadingFilmId(film.id);
     try {
       const response = await base44.functions.invoke('createRentalCheckout', { film_id: film.id });
@@ -32,6 +33,7 @@ export default function HeroCarousel({ featuredFilms, userRentals = [], user }) 
       }
     } catch (error) {
       console.error('Checkout error:', error);
+      setCheckoutLoadingId(null);
     } finally {
       setLoadingFilmId(null);
     }
