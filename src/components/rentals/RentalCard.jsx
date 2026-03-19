@@ -4,6 +4,7 @@ import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { Play, Film as FilmIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import RentalCountdown from "../RentalCountdown";
 
 export default function RentalCard({ rental, film, index, isExpired }) {
   if (!film) return null;
@@ -45,11 +46,8 @@ export default function RentalCard({ rental, film, index, isExpired }) {
           </div>
 
           {/* Status Badge */}
-          <Badge className={`absolute top-3 right-3 ${
-            isExpired 
-              ? 'bg-gray-600 text-white' 
-              : 'bg-[#EF6418] text-white'
-          } border-0`}>
+          <Badge className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white border border-white/10 flex items-center gap-1.5">
+            {!isExpired && <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />}
             {isExpired ? 'Expired' : 'Active'}
           </Badge>
         </div>
@@ -66,12 +64,7 @@ export default function RentalCard({ rental, film, index, isExpired }) {
             {isExpired ? (
               <span>Expired {new Date(rental.expires_at).toLocaleDateString()}</span>
             ) : (
-              <span>Expires {new Date(rental.expires_at).toLocaleString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit'
-              })}</span>
+              <RentalCountdown expiresAt={rental.expires_at} />
             )}
           </div>
         </div>
