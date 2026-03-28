@@ -292,7 +292,7 @@ export default function AdminFilms() {
 
       {/* Reorder Featured Modal */}
       <Dialog open={isReorderModalOpen} onOpenChange={setIsReorderModalOpen}>
-        <DialogContent className="bg-[#1A1A1A] border-[#333333] text-white max-w-md !transform-none !animate-none !left-0 !right-0 !top-0 !bottom-0 !m-auto !fixed h-fit max-h-[80vh] flex flex-col" style={{ transform: 'none', animation: 'none' }}>
+        <DialogContent className="bg-[#1A1A1A] border-[#333333] text-white max-w-md max-h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Reorder Featured Films</DialogTitle>
             <DialogDescription className="text-gray-400">
