@@ -12,6 +12,8 @@ export default function FilmCard({ film, index }) {
       className="relative aspect-[2/3] w-full rounded-xl overflow-hidden cursor-pointer block transition-all duration-300 hover:shadow-[0_0_30px_rgba(239,100,24,0.4)] hover:z-50 group"
     >
       <motion.div
+        layoutId={`poster-${film.id}`}
+        layout="position"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: index * 0.05 }}
