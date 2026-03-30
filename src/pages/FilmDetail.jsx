@@ -190,7 +190,14 @@ export default function FilmDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000]">
+    <motion.div
+      key="film-detail-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="min-h-screen bg-[#000000]"
+    >
       {/* Hero Banner */}
       <section className="relative h-[70vh] sm:h-[80vh] flex items-end overflow-hidden">
         <motion.div layoutId={`poster-${film.id}`} className="absolute inset-0 z-0">
@@ -589,6 +596,6 @@ export default function FilmDetail() {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }

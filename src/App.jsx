@@ -45,7 +45,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="popLayout">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={
           <LayoutWrapper currentPageName={mainPageKey}>

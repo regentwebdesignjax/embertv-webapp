@@ -1,7 +1,7 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import FilmCard from "../components/FilmCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -95,7 +95,14 @@ export default function Browse() {
   }
 
   return (
-    <div className="min-h-screen bg-[#000000] pb-20">
+    <motion.div
+      key="browse-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="min-h-screen bg-[#000000] pb-20"
+    >
       {/* Cinematic Hero Carousel */}
       <HeroCarousel featuredFilms={featuredFilms} userRentals={userRentals} user={user} />
 
@@ -227,6 +234,6 @@ export default function Browse() {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
