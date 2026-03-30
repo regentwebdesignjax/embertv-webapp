@@ -16,7 +16,7 @@ export default function FilmCard({ film, index }) {
         layout="position"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: index * 0.05 }}
+        transition={{ type: "spring", stiffness: 200, damping: 24, mass: 1.2 }}
         className="w-full h-full"
       >
         {film.thumbnail_url ? (

@@ -200,7 +200,7 @@ export default function FilmDetail() {
     >
       {/* Hero Banner */}
       <section className="relative h-[70vh] sm:h-[80vh] flex items-end overflow-hidden">
-        <motion.div layoutId={`poster-${film.id}`} className="absolute inset-0 z-0">
+        <motion.div layoutId={`poster-${film.id}`} className="absolute inset-0 z-0" transition={{ type: "spring", stiffness: 200, damping: 24, mass: 1.2 }} animate={{ borderRadius: 0 }}>
           <img
             src={bannerUrl}
             alt={film.title}
