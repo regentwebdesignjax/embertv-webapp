@@ -31,21 +31,21 @@ export default function ForgotPassword() {
       title="Reset password"
       subtitle="We'll send you a link to reset it"
       footer={
-        <Link to="/login" className="text-primary font-medium hover:underline">
-          <ArrowLeft className="w-3 h-3 inline mr-1" />Back to log in
+        <Link to="/login" className="font-medium hover:underline flex items-center justify-center gap-1" style={{ color: "#EF6418" }}>
+          <ArrowLeft className="w-3 h-3" />Back to log in
         </Link>
       }
     >
       {sent ? (
-        <p className="text-sm text-foreground text-center">
+        <p className="text-sm text-gray-400 text-center">
           If an account exists with that email, you'll receive a password reset link shortly.
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-white text-sm">Email address</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" aria-hidden="true" />
               <Input
                 id="email"
                 type="email"
@@ -54,21 +54,27 @@ export default function ForgotPassword() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 h-12"
+                className="pl-10 h-12 text-white placeholder:text-gray-600"
+                style={{ background: "#1a1a1a", border: "1.5px solid #EF6418", borderRadius: "8px" }}
                 required
               />
             </div>
           </div>
-          <Button type="submit" className="w-full h-12 font-medium" disabled={loading}>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full h-12 rounded-lg font-semibold text-white text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+            style={{ background: "#EF6418", boxShadow: "0 4px 20px rgba(239,100,24,0.4)" }}
+          >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
                 Sending...
               </>
             ) : (
               "Send reset link"
             )}
-          </Button>
+          </button>
         </form>
       )}
     </AuthLayout>
