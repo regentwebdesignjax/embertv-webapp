@@ -1,0 +1,61 @@
+{
+  "name": "FilmRental",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user who rented the film"
+    },
+    "film_id": {
+      "type": "string",
+      "description": "ID of the rented film"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "expired",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Current rental status"
+    },
+    "stripe_checkout_session_id": {
+      "type": "string",
+      "description": "Stripe checkout session ID"
+    },
+    "stripe_payment_intent_id": {
+      "type": "string",
+      "description": "Stripe payment intent ID"
+    },
+    "purchased_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the rental was purchased"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the rental expires (24 hours from purchase)"
+    },
+    "amount_cents": {
+      "type": "integer",
+      "description": "Charged rental amount in cents at time of purchase (gross)"
+    },
+    "net_amount_cents": {
+      "type": "integer",
+      "description": "Net amount in cents after Stripe fees (from balance transaction)"
+    },
+    "currency": {
+      "type": "string",
+      "default": "usd",
+      "description": "Currency used for the rental (e.g., usd, eur)"
+    }
+  },
+  "required": [
+    "user_id",
+    "film_id"
+  ],
+  "rls": {}
+}

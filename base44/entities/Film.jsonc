@@ -1,0 +1,130 @@
+{
+  "name": "Film",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Film title"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly slug (unique)"
+    },
+    "short_description": {
+      "type": "string",
+      "description": "Brief description for cards"
+    },
+    "long_description": {
+      "type": "string",
+      "description": "Detailed description"
+    },
+    "thumbnail_url": {
+      "type": "string",
+      "description": "URL for film thumbnail"
+    },
+    "banner_image_url": {
+      "type": "string",
+      "description": "URL for hero/banner image"
+    },
+    "duration_minutes": {
+      "type": "integer",
+      "description": "Film duration in minutes"
+    },
+    "release_year": {
+      "type": "integer",
+      "description": "Year of release"
+    },
+    "genre": {
+      "type": "string",
+      "description": "Film genre"
+    },
+    "rating": {
+      "type": "string",
+      "description": "Content rating (e.g., PG, PG-13, R)"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether film is visible to users"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show film in featured section"
+    },
+    "featured_order": {
+      "type": "integer",
+      "description": "Sort order for the featured hero carousel (ascending)"
+    },
+    "is_new_release": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show film in new releases section"
+    },
+    "is_trending": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show film in trending section"
+    },
+    "is_leaving_soon": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show film in leaving soon section"
+    },
+    "stripe_product_id": {
+      "type": "string",
+      "description": "Stripe Product ID - source of truth for pricing"
+    },
+    "stripe_price_id": {
+      "type": "string",
+      "description": "Stripe Price ID - synced from Stripe"
+    },
+    "rental_price_cents": {
+      "type": "integer",
+      "description": "Rental price in cents - synced from Stripe"
+    },
+    "rental_currency": {
+      "type": "string",
+      "description": "Currency code (e.g., usd) - synced from Stripe",
+      "default": "usd"
+    },
+    "trailer_embed_code": {
+      "type": "string",
+      "description": "HTML embed code for trailer (public preview)"
+    },
+    "full_movie_embed_code": {
+      "type": "string",
+      "description": "HTML embed code for full movie (protected, requires rental)"
+    },
+    "hls_playback_url": {
+      "type": "string",
+      "description": "HLS playback URL for tvOS app (protected, requires rental)"
+    }
+  },
+  "required": [
+    "title",
+    "slug"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "write": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

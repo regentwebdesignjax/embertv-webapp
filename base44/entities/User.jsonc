@@ -1,0 +1,13 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "display_name": {
+      "type": "string",
+      "description": "User's display name (editable)"
+    }
+  },
+  "required": [
+    "display_name"
+  ]
+}

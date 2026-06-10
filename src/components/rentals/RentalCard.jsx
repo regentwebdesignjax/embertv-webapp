@@ -7,14 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import RentalCountdown from "../RentalCountdown";
 
 export default function RentalCard({ rental, film, index, isExpired }) {
-  if (!film) return null;
-
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const mouseXSpring = useSpring(x);
   const mouseYSpring = useSpring(y);
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  if (!film) return null;
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
