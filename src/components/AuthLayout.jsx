@@ -6,33 +6,33 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
       className="min-h-screen flex flex-col items-center justify-center px-4 py-12"
       style={{
         background: "radial-gradient(ellipse 70% 60% at 50% 60%, rgba(180,60,0,0.45) 0%, rgba(100,30,0,0.25) 40%, #000000 75%)",
-        backgroundColor: "#000000",
-      }}
-    >
+        backgroundColor: "#000000"
+      }}>
+      
       {/* Logo above card */}
       <div className="flex flex-col items-center mb-8">
         <img
           src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/691721b89e14bc8b401725d6/6b060a1ae_ember-tv-logo.png"
           alt="Ember TV"
-          className="h-16 w-auto mb-3"
-        />
+          className="h-16 w-auto mb-3" />
+        
       </div>
 
       {/* Card */}
       <div
         className="w-full max-w-sm rounded-2xl p-8"
-        style={{ background: "#232323", border: "1px solid #2e2e2e" }}
-      >
+        style={{ background: "#232323", border: "1px solid #2e2e2e" }}>
+        
         {/* Icon */}
         <div className="flex justify-center mb-5">
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center"
+            className="w-14 h-14 rounded-2xl flex items-center justify-center hidden"
             style={{
               background: "#1a1a1a",
               border: "2px solid #EF6418",
-              boxShadow: "0 0 16px rgba(239,100,24,0.35)",
-            }}
-          >
+              boxShadow: "0 0 16px rgba(239,100,24,0.35)"
+            }}>
+            
             <Icon className="w-7 h-7 text-white" aria-hidden="true" />
           </div>
         </div>
@@ -45,10 +45,10 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
 
         {children}
 
-        {footer && (
-          <p className="text-center text-sm text-gray-500 mt-6">{footer}</p>
-        )}
+        {footer &&
+        <p className="text-center text-sm text-gray-500 mt-6">{footer}</p>
+        }
       </div>
-    </div>
-  );
+    </div>);
+
 }
