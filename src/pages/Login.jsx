@@ -46,27 +46,6 @@ export default function Login() {
         </>
       }
     >
-      {/* Google Button */}
-      <button
-        type="button"
-        onClick={handleGoogle}
-        className="w-full h-12 flex items-center justify-center gap-3 rounded-lg text-sm font-medium text-white mb-6 transition-colors hover:bg-white/10"
-        style={{ background: "#1a1a1a", border: "1px solid #3a3a3a" }}
-      >
-        <GoogleIcon className="w-5 h-5" />
-        Continue with Google
-      </button>
-
-      {/* Divider */}
-      <div className="relative mb-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t" style={{ borderColor: "#3a3a3a" }} />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="px-3 text-gray-500" style={{ background: "#232323" }}>OR</span>
-        </div>
-      </div>
-
       {error && (
         <div className="mb-4 p-3 rounded-lg text-sm text-red-400" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
           {error}
