@@ -2,8 +2,13 @@ import React from "react";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   return (
+    <>
+    <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
+      .auth-layout, .auth-layout * { font-family: 'Albert Sans', system-ui, -apple-system, sans-serif !important; }
+    `}</style>
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-12"
+      className="auth-layout min-h-screen flex flex-col items-center justify-center px-4 py-12"
       style={{
         background: "radial-gradient(ellipse 70% 60% at 50% 60%, rgba(180,60,0,0.45) 0%, rgba(100,30,0,0.25) 40%, #000000 75%)",
         backgroundColor: "#000000"
@@ -49,6 +54,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         <p className="text-center text-sm text-gray-500 mt-6">{footer}</p>
         }
       </div>
-    </div>);
-
+    </div>
+    </>
+  );
 }
