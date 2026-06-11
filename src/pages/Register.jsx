@@ -60,7 +60,7 @@ export default function Register() {
       await base44.auth.resendOtp(email);
       toast({
         title: "Code sent",
-        description: "Check your email for the new code.",
+        description: "Check your email for the new code."
       });
     } catch (err) {
       setError(err.message || "Failed to resend code");
@@ -76,21 +76,21 @@ export default function Register() {
       <AuthLayout
         icon={Mail}
         title="Verify your email"
-        subtitle={`We sent a code to ${email}`}
-      >
-        {error && (
-          <div className="mb-4 p-3 rounded-lg text-sm text-red-400" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+        subtitle={`We sent a code to ${email}`}>
+        
+        {error &&
+        <div className="mb-4 p-3 rounded-lg text-sm text-red-400" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
             {error}
           </div>
-        )}
+        }
         <div className="flex justify-center mb-6">
           <InputOTP
             maxLength={6}
             value={otpCode}
             onChange={setOtpCode}
             autoFocus
-            autoComplete="one-time-code"
-          >
+            autoComplete="one-time-code">
+            
             <InputOTPGroup>
               <InputOTPSlot index={0} className="text-white bg-[#1a1a1a] border-[#EF6418]" />
               <InputOTPSlot index={1} className="text-white bg-[#1a1a1a] border-[#3a3a3a]" />
@@ -106,16 +106,16 @@ export default function Register() {
           onClick={handleVerify}
           disabled={loading || otpCode.length < 6}
           className="w-full h-12 rounded-lg font-semibold text-white text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60"
-          style={{ background: "#EF6418", boxShadow: "0 4px 20px rgba(239,100,24,0.4)" }}
-        >
-          {loading ? (
-            <>
+          style={{ background: "#EF6418", boxShadow: "0 4px 20px rgba(239,100,24,0.4)" }}>
+          
+          {loading ?
+          <>
               <Loader2 className="w-4 h-4 animate-spin" />
               Verifying...
-            </>
-          ) : (
-            "Verify"
-          )}
+            </> :
+
+          "Verify"
+          }
         </button>
         <p className="text-center text-sm text-gray-500 mt-4">
           Didn't receive the code?{" "}
@@ -123,8 +123,8 @@ export default function Register() {
             Resend
           </button>
         </p>
-      </AuthLayout>
-    );
+      </AuthLayout>);
+
   }
 
   return (
@@ -133,19 +133,19 @@ export default function Register() {
       title="Create your account"
       subtitle="Sign up to get started"
       footer={
-        <>
+      <>
           Already have an account?{" "}
           <Link to="/login" className="font-medium hover:underline" style={{ color: "#EF6418" }}>
             Log in
           </Link>
         </>
-      }
-    >
-      {error && (
-        <div className="mb-4 p-3 rounded-lg text-sm text-red-400" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+      }>
+      
+      {error &&
+      <div className="mb-4 p-3 rounded-lg text-sm text-red-400" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
           {error}
         </div>
-      )}
+      }
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
@@ -164,8 +164,8 @@ export default function Register() {
               style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'email' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
               onFocus={() => setFocused('email')}
               onBlur={() => setFocused(null)}
-              required
-            />
+              required />
+            
           </div>
         </div>
         <div className="space-y-1.5">
@@ -183,8 +183,8 @@ export default function Register() {
               style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'password' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
               onFocus={() => setFocused('password')}
               onBlur={() => setFocused(null)}
-              required
-            />
+              required />
+            
           </div>
         </div>
         <div className="space-y-1.5">
@@ -202,26 +202,26 @@ export default function Register() {
               style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'confirm' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
               onFocus={() => setFocused('confirm')}
               onBlur={() => setFocused(null)}
-              required
-            />
+              required />
+            
           </div>
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-12 rounded-lg font-semibold text-white text-sm transition-all mt-2 flex items-center justify-center gap-2 disabled:opacity-60"
-          style={{ background: "#EF6418", boxShadow: "0 4px 20px rgba(239,100,24,0.4)" }}
-        >
-          {loading ? (
-            <>
+          className="w-full h-12 rounded-lg font-semibold text-white transition-all mt-2 flex items-center justify-center gap-2 disabled:opacity-60 text-base"
+          style={{ background: "#EF6418", boxShadow: "0 4px 20px rgba(239,100,24,0.4)" }}>
+          
+          {loading ?
+          <>
               <Loader2 className="w-4 h-4 animate-spin" />
               Creating account...
-            </>
-          ) : (
-            "Create account"
-          )}
+            </> :
+
+          "Create account"
+          }
         </button>
       </form>
-    </AuthLayout>
-  );
+    </AuthLayout>);
+
 }
