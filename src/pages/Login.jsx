@@ -13,6 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,7 +67,9 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="pl-10 h-12 text-white placeholder:text-gray-600"
-              style={{ background: "#1a1a1a", border: "1.5px solid #EF6418", borderRadius: "8px", outline: "none" }}
+              style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'email' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px", outline: "none" }}
+              onFocus={() => setFocused('email')}
+              onBlur={() => setFocused(null)}
               required
             />
           </div>
@@ -88,7 +91,9 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="pl-10 h-12 text-white placeholder:text-gray-600"
-              style={{ background: "#1a1a1a", border: "1px solid #3a3a3a", borderRadius: "8px" }}
+              style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'password' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
+              onFocus={() => setFocused('password')}
+              onBlur={() => setFocused(null)}
               required
             />
           </div>

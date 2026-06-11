@@ -18,6 +18,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [focused, setFocused] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -160,7 +161,9 @@ export default function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="pl-10 h-12 text-white placeholder:text-gray-600"
-              style={{ background: "#1a1a1a", border: "1.5px solid #EF6418", borderRadius: "8px" }}
+              style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'email' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
+              onFocus={() => setFocused('email')}
+              onBlur={() => setFocused(null)}
               required
             />
           </div>
@@ -177,7 +180,9 @@ export default function Register() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="pl-10 h-12 text-white placeholder:text-gray-600"
-              style={{ background: "#1a1a1a", border: "1px solid #3a3a3a", borderRadius: "8px" }}
+              style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'password' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
+              onFocus={() => setFocused('password')}
+              onBlur={() => setFocused(null)}
               required
             />
           </div>
@@ -194,7 +199,9 @@ export default function Register() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="pl-10 h-12 text-white placeholder:text-gray-600"
-              style={{ background: "#1a1a1a", border: "1px solid #3a3a3a", borderRadius: "8px" }}
+              style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'confirm' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
+              onFocus={() => setFocused('confirm')}
+              onBlur={() => setFocused(null)}
               required
             />
           </div>
