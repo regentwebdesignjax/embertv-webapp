@@ -39,19 +39,19 @@ export default function Login() {
       title="Welcome back"
       subtitle="Log in to your account"
       footer={
-        <>
+      <>
           Don't have an account?{" "}
           <Link to="/register" className="font-medium hover:underline" style={{ color: "#EF6418" }}>
             Create one
           </Link>
         </>
-      }
-    >
-      {error && (
-        <div className="mb-4 p-3 rounded-lg text-sm text-red-400" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
+      }>
+      
+      {error &&
+      <div className="mb-4 p-3 rounded-lg text-sm text-red-400" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
           {error}
         </div>
-      )}
+      }
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
@@ -70,8 +70,8 @@ export default function Login() {
               style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'email' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px", outline: "none" }}
               onFocus={() => setFocused('email')}
               onBlur={() => setFocused(null)}
-              required
-            />
+              required />
+            
           </div>
         </div>
         <div className="space-y-1.5">
@@ -94,26 +94,26 @@ export default function Login() {
               style={{ background: "#1a1a1a", border: `1.5px solid ${focused === 'password' ? '#EF6418' : '#3a3a3a'}`, borderRadius: "8px" }}
               onFocus={() => setFocused('password')}
               onBlur={() => setFocused(null)}
-              required
-            />
+              required />
+            
           </div>
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-12 rounded-lg font-semibold text-white text-sm transition-all mt-2 flex items-center justify-center gap-2 disabled:opacity-60"
-          style={{ background: "#EF6418", boxShadow: "0 4px 20px rgba(239,100,24,0.4)" }}
-        >
-          {loading ? (
-            <>
+          className="w-full h-12 rounded-lg font-semibold text-white transition-all mt-2 flex items-center justify-center gap-2 disabled:opacity-60 text-base"
+          style={{ background: "#EF6418", boxShadow: "0 4px 20px rgba(239,100,24,0.4)" }}>
+          
+          {loading ?
+          <>
               <Loader2 className="w-4 h-4 animate-spin" />
               Logging in...
-            </>
-          ) : (
-            "Log in"
-          )}
+            </> :
+
+          "Log in"
+          }
         </button>
       </form>
-    </AuthLayout>
-  );
+    </AuthLayout>);
+
 }
