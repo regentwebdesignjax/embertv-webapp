@@ -25,16 +25,16 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         
         {/* Icon */}
         <div className="flex justify-center mb-5">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center hidden"
-            style={{
-              background: "#1a1a1a",
-              border: "2px solid #EF6418",
-              boxShadow: "0 0 16px rgba(239,100,24,0.35)"
-            }}>
-            
-            <Icon className="w-7 h-7 text-white" aria-hidden="true" />
-          </div>
+          
+
+
+
+
+
+
+
+
+          
         </div>
 
         {/* Title & subtitle */}
