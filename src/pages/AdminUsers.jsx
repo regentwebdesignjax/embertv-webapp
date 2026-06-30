@@ -93,7 +93,7 @@ export default function AdminUsers() {
   // --- Award free rental ---
   const bulkAwardRentalMutation = useMutation({
     mutationFn: () => {
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
       return Promise.all(
         selectedUserIds.map(userId =>
           base44.entities.FilmRental.create({
